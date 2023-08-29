@@ -29,6 +29,8 @@ inventory_height = num_rows * (slot_size + slot_margin)
 inventory_x = (screen_width - inventory_width) // 2
 inventory_y = (screen_height - inventory_height) // 2
 
+inventory_equipped_item = None
+
 def draw_inventory():
     inventory_x = (screen_width - inventory_width) // 2
     inventory_y = (screen_height - inventory_height) // 2
@@ -70,7 +72,6 @@ def draw_inventory():
             slot_index += 1  # 슬롯 인덱스 증가
 
 
-
 # 색상 정의
 black = (0, 0, 0)
 white = (255, 255, 255)
@@ -88,7 +89,7 @@ game_state = "start"
 
 # 시작 화면과 연구실 화면 객체 생성
 start_state = start_state.StartState(image_directory, screen_width, screen_height)
-lab_state = lab_state.LabState(image_directory, screen_width, screen_height, screen)
+lab_state = lab_state.LabState(image_directory, screen_width, screen_height, screen, inventory_equipped_item)
 hollway_state = hollway_state.HollwayState(image_directory, screen_width, screen_height, screen)
 
 equipped_item = None  # 현재 장착된 아이템을 저장하는 변수
@@ -103,6 +104,7 @@ while running:
             start_state.handle_event(event)
             game_state = start_state.game_state
         elif game_state == "lab":
+            hollway_state.game_state = "hollway"
             inventory = lab_state.inventory
             new_items = lab_state.inventory_items
             for item in new_items:
@@ -111,6 +113,7 @@ while running:
             lab_state.handle_event(event)
             game_state = lab_state.game_state
         elif game_state == "hollway":
+            lab_state.game_state = "lab"
             inventory = hollway_state.inventory
             hollway_state.handle_event(event)
             game_state = hollway_state.game_state
@@ -124,6 +127,8 @@ while running:
                         
                         if slot_rect.collidepoint(event.pos):
                                 slot_clicked = True  # 슬롯 클릭되었음을 표시
+                        
+                        
 
     screen.fill(white)
 
@@ -154,15 +159,26 @@ while running:
     equipped_item_rect = pygame.Rect(screen_width - 110, screen_height - 110, 100, 100)
 
     if equipped_item is not None:
+        equipped_item_rect = pygame.Rect(screen_width - 110, screen_height - 110, 100, 100)
         equipped_item_image_rect = equipped_item.get_rect(center=equipped_item_rect.center)
         box_size = 100
         box_surface = pygame.Surface((box_size, box_size), pygame.SRCALPHA)  # 투명한 Surface 생성
         pygame.draw.rect(box_surface, (0, 0, 0), pygame.Rect(0, 0, box_size, box_size), 3)  # 테두리 그리기
-    
+
         # 박스 배경을 투명하게 설정하고 장착된 아이템 이미지 그리기
         screen.blit(box_surface, (equipped_item_rect.left - (box_size - equipped_item_rect.width) / 2,
                             equipped_item_rect.top - (box_size - equipped_item_rect.height) / 2))
         screen.blit(equipped_item, equipped_item_image_rect)  # 아이템 이미지 표시
+
+        # 아이템 종류에 따라 inventory_equipped_item 설정
+        if equipped_item == lab_state.inventory_wire:
+            lab_state.inventory_equipped_item = "lab_wire"
+        elif equipped_item == lab_state.inventory_switch:
+            lab_state.inventory_equipped_item = "lab_switch"
+        elif equipped_item == lab_state.keykard:
+            lab_state.inventory_equipped_item = "keykard"
+
+
 
     pygame.display.flip()
 

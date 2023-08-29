@@ -2,12 +2,13 @@ import pygame
 import os
 
 class LabState:
-    def __init__(self, image_directory, screen_width, screen_height, screen):
+    def __init__(self, image_directory, screen_width, screen_height, screen, inventory_equipped_item):
         self.image_directory = image_directory
         self.screen_width = screen_width
         self.screen_height = screen_height
         self.game_state = "lab"
         self.screen = screen
+        self.inventory_equipped_item = inventory_equipped_item
 
         # lab_state에 필요한 초기화 코드 작성
         self.lab_computer_flag = False
@@ -24,17 +25,24 @@ class LabState:
         self.show_lab_wire_text = False
         self.show_lab_profile_text = False
         self.text_start_time = None
+        self.show_lab_door_text = False
+        self.show_lab_researcher_text = False
+        self.one_time = True
+        self.keydoor_flag = False
         # lab_switch를 눌렀을 때 텍스트를 표시하는 플래그
         self.show_text = False
         self.noclick = False
         self.inventory_items = []
         self.inventory = None
 
+
         # 다른 상호작용 요소에 대한 초기화 코드 작성
         self.inventory_switch_path = os.path.join(self.image_directory, "inventory_items/inventory_switch.png")
         self.inventory_wire_path = os.path.join(self.image_directory, "inventory_items/inventory_wire.png")
         self.inventory_switch = pygame.image.load(self.inventory_switch_path)
         self.inventory_wire = pygame.image.load(self.inventory_wire_path)
+        self.keykard_path = os.path.join(self.image_directory, "lab/keykard.png")
+        self.keykard = pygame.image.load(self.keykard_path)
         
         # ... (다른 이미지들 로드 및 Rect 설정)
         self.lab_clock_path = os.path.join(self.image_directory, "lab/lab_clock.png")
@@ -81,9 +89,17 @@ class LabState:
                 elif self.lab_computer_rect.collidepoint(event.pos):
                     self.lab_computer_flag = True
                 elif self.lab_door_rect.collidepoint(event.pos):
-                    self.game_state = "hollway"
+                    #self.game_state = "hollway"
+                    if self.inventory_equipped_item == "keykard":
+                        self.show_lab_door_text = True
+                        self.keydoor_flag = True
+                    else:    
+                        self.show_lab_door_text = True
+
                 elif self.lab_researcher_rect.collidepoint(event.pos):
-                    print("시체다.")
+                    #print("시체다.")
+                    self.show_lab_researcher_text = True
+                    self.inventory_items.append(self.keykard)
                 elif self.lab_profile_rect.collidepoint(event.pos):
                     self.lab_profile_flag = False
                     self.show_lab_profile_text = True
@@ -116,6 +132,18 @@ class LabState:
                         self.show_lab_wire_text = False
                         self.text_start_time = None  # 텍스트 시작 시간 초기화
                         self.show_text = False
+                        self.show_lab_door_text = False
+                        self.show_lab_researcher_text = False
+                if self.one_time:
+                        self.text_start_time = None
+                        self.show_text = False
+                        self.show_lab_researcher_text = False
+                        self.one_time = False
+                if self.keydoor_flag:
+                        self.text_start_time = None  # 텍스트 시작 시간 초기화
+                        self.show_text = False
+                        self.show_lab_door_text = False
+                        self.keydoor_flag = False
 
     def show_text_box(self, text, elapsed_time):
         text_box_rect = pygame.Rect(50, self.screen_height - 220, self.screen_width - 100, 200)
@@ -148,7 +176,7 @@ class LabState:
                 if self.text_start_time is None:
                     self.text_start_time = pygame.time.get_ticks()
                 self.elapsed_time = pygame.time.get_ticks() - self.text_start_time
-                self.show_text_box("전선을 눌러서 텍스트를 표시합니다.", self.elapsed_time)
+                self.show_text_box("전선을 흭득했다.", self.elapsed_time)
                 pygame.display.flip()
         if self.lab_switch_flag :
             screen.blit(self.lab_switch, self.lab_switch_rect)
@@ -158,7 +186,7 @@ class LabState:
                 if self.text_start_time is None:
                     self.text_start_time = pygame.time.get_ticks()
                 self.elapsed_time = pygame.time.get_ticks() - self.text_start_time
-                self.show_text_box("스위치를 눌러서 텍스트를 표시합니다.", self.elapsed_time)
+                self.show_text_box("낡은 스위치를 흭득했다.", self.elapsed_time)
                 pygame.display.flip()
         if not self.lab_profile_flag :
             screen.blit(self.lab_profile_image, self.lab_profile_image_rect)
@@ -169,4 +197,30 @@ class LabState:
                 self.elapsed_time = pygame.time.get_ticks() - self.text_start_time
                 self.show_text_box("내 사진과 함께 내 정보가 적혀 있는 프로필이다.", self.elapsed_time)
                 pygame.display.flip()
-                
+        if self.show_lab_door_text:
+            self.show_text = True
+            if self.text_start_time is None:
+                self.text_start_time = pygame.time.get_ticks()
+            self.elapsed_time = pygame.time.get_ticks() - self.text_start_time
+            self.show_text_box("문이 잠겨 있다.", self.elapsed_time)
+        elif self.show_lab_door_text and self.keydoor_flag:
+            self.show_text = True
+            if self.text_start_time is None:
+                self.text_start_time = pygame.time.get_ticks()
+            self.elapsed_time = pygame.time.get_ticks() - self.text_start_time
+            self.show_text_box("ID카드가 망가졌는지 열리지 않는다.", self.elapsed_time)
+            pygame.display.flip()
+        if self.show_lab_researcher_text and self.one_time:
+            self.show_text = True
+            if self.text_start_time is None:
+                self.text_start_time = pygame.time.get_ticks()
+            self.elapsed_time = pygame.time.get_ticks() - self.text_start_time
+            self.show_text_box("부패한 시체 속에서 ID카드를 발견했다.", self.elapsed_time)
+            pygame.display.flip()
+        elif self.show_lab_researcher_text and not self.one_time:
+            self.show_text = True
+            if self.text_start_time is None:
+                self.text_start_time = pygame.time.get_ticks()
+            self.elapsed_time = pygame.time.get_ticks() - self.text_start_time
+            self.show_text_box("뒷면에는 Dawoo라는 글자와 0412이라는 숫자가 적혀 있다.", self.elapsed_time)
+            pygame.display.flip()
