@@ -47,6 +47,7 @@ class LabState:
         
         
         # ... (다른 이미지들 로드 및 Rect 설정)
+        self.lab_path = os.path.join(self.image_directory, "lab/lab.png")
         self.lab_clock_path = os.path.join(self.image_directory, "lab/lab_clock.png")
         self.lab_computer_path = os.path.join(self.image_directory, "lab/lab_computer.png")
         self.lab_door_path = os.path.join(self.image_directory, "lab/lab_door.png")
@@ -54,6 +55,7 @@ class LabState:
         self.lab_profile_path = os.path.join(self.image_directory, "lab/lab_profile.png")
         self.lab_switch_path = os.path.join(self.image_directory, "lab/lab_switch.png")
         self.lab_wire_path = os.path.join(self.image_directory, "lab/lab_wire.png")
+        self.lab = pygame.image.load(self.lab_path)
         self.lab_clock = pygame.image.load(self.lab_clock_path)
         self.lab_computer = pygame.image.load(self.lab_computer_path)
         self.lab_door = pygame.image.load(self.lab_door_path)
@@ -61,6 +63,7 @@ class LabState:
         self.lab_profile = pygame.image.load(self.lab_profile_path)
         self.lab_switch = pygame.image.load(self.lab_switch_path)
         self.lab_wire = pygame.image.load(self.lab_wire_path)
+        self.lab_rect = self.lab.get_rect()
         self.lab_clock_rect = self.lab_clock.get_rect()
         self.lab_computer_rect = self.lab_computer.get_rect()
         self.lab_door_rect = self.lab_door.get_rect()
@@ -68,6 +71,7 @@ class LabState:
         self.lab_profile_rect = self.lab_profile.get_rect()
         self.lab_switch_rect = self.lab_switch.get_rect()
         self.lab_wire_rect = self.lab_wire.get_rect()
+        self.lab_rect.center = (screen_width // 2, screen_height // 2)
         self.lab_clock_rect.center = (screen_width // 1.3, 100)
         self.lab_computer_rect.center = (screen_width // 2.5, screen_height // 2)
         self.lab_door_rect.center = (100, screen_height // 1.8)
@@ -130,9 +134,9 @@ class LabState:
                 elif self.lab_computer_rect.collidepoint(event.pos):
                     self.lab_computer_flag = True
                 elif self.lab_door_rect.collidepoint(event.pos):
-                    self.game_state = "hollway"  
-                        # self.show_lab_door_text = True
-                        # self.keydoor_flag = True
+                    #self.game_state = "hollway"  
+                    self.show_lab_door_text = True
+                    self.keydoor_flag = True
 
                 elif self.lab_researcher_rect.collidepoint(event.pos):
                     #print("시체다.")
@@ -244,6 +248,7 @@ class LabState:
                 slot_index += 1  # 슬롯 인덱스 증가
 
     def draw(self, screen):
+        screen.blit(self.lab, self.lab_rect)
         screen.blit(self.lab_clock, self.lab_clock_rect)
         screen.blit(self.lab_computer, self.lab_computer_rect)
         screen.blit(self.lab_door, self.lab_door_rect)
