@@ -17,7 +17,7 @@ class LabState:
         self.lab_switch_flag = True
         self.lab_wire_flag = True
         self.lab_profile_flag = True
-        self.lab_profile_image_path = os.path.join(self.image_directory, "Other/Profile.png")
+        self.lab_profile_image_path = os.path.join(self.image_directory, "./../image/Other/Profile.png")
         self.lab_profile_image = pygame.image.load(self.lab_profile_image_path)
         self.lab_profile_image_rect = self.lab_profile_image.get_rect()
         self.lab_profile_image_rect.center = (self.screen_width // 2, self.screen_height // 2)
@@ -38,23 +38,23 @@ class LabState:
 
 
         # 다른 상호작용 요소에 대한 초기화 코드 작성
-        self.inventory_switch_path = os.path.join(self.image_directory, "inventory_items/inventory_switch.png")
-        self.inventory_wire_path = os.path.join(self.image_directory, "inventory_items/inventory_wire.png")
+        self.inventory_switch_path = os.path.join(self.image_directory, "./../image/inventory_items/inventory_switch.png")
+        self.inventory_wire_path = os.path.join(self.image_directory, "./../image/inventory_items/inventory_wire.png")
         self.inventory_switch = pygame.image.load(self.inventory_switch_path)
         self.inventory_wire = pygame.image.load(self.inventory_wire_path)
-        self.keykard_path = os.path.join(self.image_directory, "lab/keykard.png")
+        self.keykard_path = os.path.join(self.image_directory, "./../image/lab/keykard.png")
         self.keykard = pygame.image.load(self.keykard_path)
         
         
         # ... (다른 이미지들 로드 및 Rect 설정)
-        self.lab_path = os.path.join(self.image_directory, "lab/lab.png")
-        self.lab_clock_path = os.path.join(self.image_directory, "lab/lab_clock.png")
-        self.lab_computer_path = os.path.join(self.image_directory, "lab/lab_computer.png")
-        self.lab_door_path = os.path.join(self.image_directory, "lab/lab_door.png")
-        self.lab_researcher_path = os.path.join(self.image_directory, "lab/lab_researcher.png")
-        self.lab_profile_path = os.path.join(self.image_directory, "lab/lab_profile.png")
-        self.lab_switch_path = os.path.join(self.image_directory, "lab/lab_switch.png")
-        self.lab_wire_path = os.path.join(self.image_directory, "lab/lab_wire.png")
+        self.lab_path = os.path.join(self.image_directory, "./../image/lab/lab.png")
+        self.lab_clock_path = os.path.join(self.image_directory, "./../image/lab/lab_clock.png")
+        self.lab_computer_path = os.path.join(self.image_directory, "./../image/lab/lab_computer.png")
+        self.lab_door_path = os.path.join(self.image_directory, "./../image/lab/lab_door.png")
+        self.lab_researcher_path = os.path.join(self.image_directory, "./../image/lab/lab_researcher.png")
+        self.lab_profile_path = os.path.join(self.image_directory, "./../image/lab/lab_profile.png")
+        self.lab_switch_path = os.path.join(self.image_directory, "./../image/lab/lab_switch.png")
+        self.lab_wire_path = os.path.join(self.image_directory, "./../image/lab/lab_wire.png")
         self.lab = pygame.image.load(self.lab_path)
         self.lab_clock = pygame.image.load(self.lab_clock_path)
         self.lab_computer = pygame.image.load(self.lab_computer_path)
