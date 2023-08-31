@@ -40,16 +40,14 @@ pygame.init()
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption('The Game')
 
-# 이미지 디렉토리 설정
-image_directory = "The Game/image/"
 
 # 게임 상태 정의
 game_state = "start"
 
 # 시작 화면과 연구실 화면 객체 생성
-start_state = start_state.StartState(image_directory, screen_width, screen_height)
-lab_state = lab_state.LabState(image_directory, screen_width, screen_height, screen, inventory_equipped_item)
-hollway_state = hollway_state.HollwayState(image_directory, screen_width, screen_height, screen)
+start_state = start_state.StartState(screen_width, screen_height)
+lab_state = lab_state.LabState(screen_width, screen_height, screen, inventory_equipped_item)
+hollway_state = hollway_state.HollwayState(screen_width, screen_height, screen)
 
 equipped_item = None  # 현재 장착된 아이템을 저장하는 변수
 
