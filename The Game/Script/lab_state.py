@@ -106,6 +106,16 @@ class LabState:
 
         self.equipped_item = None  # 현재 장착된 아이템을 저장하는 변수
 
+        self.computer_width = 400  # 컴퓨터 화면 너비
+        self.computer_height = 300  # 컴퓨터 화면 높이
+
+        self.lab_computer_screen = pygame.Surface((self.computer_width, self.computer_height))  # 컴퓨터 화면을 그릴 Surface 생성
+        self.lab_computer_screen.fill((200, 200, 200))  # 회색 배경으로 초기화
+        self.lab_computer_screen_rect = self.lab_computer_screen.get_rect()
+        self.lab_computer_screen_rect.center = (screen_width // 2, screen_height // 2)  # 화면 중앙에 위치
+
+
+
 
     def handle_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
@@ -120,9 +130,7 @@ class LabState:
                     self.game_state = "hollway"  
                     # self.show_lab_door_text = True
                     # self.keydoor_flag = True
-
                 elif self.lab_researcher_rect.collidepoint(event.pos):
-                    #print("시체다.")
                     if self.keykard_flag:
                         self.inventory_items.append(self.keykard)
                         self.keykard_flag = False
@@ -150,6 +158,7 @@ class LabState:
                         self.show_lab_profile_text = False
                         self.text_start_time = None
                         self.show_text = False
+                        self.noclick = False
                 elif not self.show_lab_profile_text and not self.lab_profile_flag:
                         # 이미지가 보여지고, 텍스트 창이 숨겨진 경우에는 "z" 키로 이미지를 지웁니다.
                         self.lab_profile_flag = True
@@ -159,6 +168,7 @@ class LabState:
                         self.show_text = False
                         self.one_time = False
                         self.show_lab_researcher_text = False
+                        self.noclick = False
                 else :
                         self.show_lab_switch_text = False
                         self.show_lab_wire_text = False
@@ -166,13 +176,17 @@ class LabState:
                         self.show_text = False
                         self.show_lab_door_text = False
                         self.show_lab_researcher_text = False
+                        self.noclick = False
                 if self.keydoor_flag:
                         self.text_start_time = None  # 텍스트 시작 시간 초기화
                         self.show_text = False
                         self.show_lab_door_text = False
                         self.keydoor_flag = False
+                        self.noclick = False
 
     def show_text_box(self, text, elapsed_time):
+        self.show_text = True
+        self.noclick = True
         text_box_rect = pygame.Rect(50, self.screen_height - 220, self.screen_width - 100, 200)
         pygame.draw.rect(self.screen, (0,0,0), text_box_rect)
         pygame.draw.rect(self.screen, (255,255,255), text_box_rect.inflate(-5, -5))
@@ -180,7 +194,7 @@ class LabState:
         font = pygame.font.SysFont("malgungothic", 36)
         visible_text = ""
         for i in range(len(text)):
-            if elapsed_time > i * 100:  # 글자마다 100ms씩 지연
+            if elapsed_time > i * 100:  # 글자마다 100ms씩 지연6
                 visible_text += text[i]
         text_surface = font.render(visible_text, True, (0,0,0))
         text_rect = text_surface.get_rect(center=text_box_rect.center)
@@ -254,5 +268,10 @@ class LabState:
                 self.elapsed_time = pygame.time.get_ticks() - self.text_start_time
                 self.show_text_box("ID카드가 망가졌는지 열리지 않는다.", self.elapsed_time)
                 pygame.display.flip()
+        if self.lab_computer_flag:
+            # 검은 테두리를 그립니다
+            pygame.draw.rect(self.screen, (0, 0, 0), (self.lab_computer_screen_rect.left - 5, self.lab_computer_screen_rect.top - 5, self.computer_width + 10, self.computer_height + 10), 5)            
             
-
+            # 흰색 내부를 그립니다.
+            pygame.draw.rect(self.screen, (255, 255, 255), (self.lab_computer_screen_rect.left, self.lab_computer_screen_rect.top, self.computer_width, self.computer_height))
+            screen.blit(self.lab_computer_screen, self.lab_computer_screen_rect)
