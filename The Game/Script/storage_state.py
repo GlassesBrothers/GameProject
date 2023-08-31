@@ -2,34 +2,43 @@ import pygame
 import os
 
 
+# 야 강민아 지금 내가 Box 상호작용 이벤트랑 처음에 누르면 아이템 먹어지고 
+# 상자가 열린 모습으로 바뀌고 다시 클릭하면 다른 메세지가 출력되게 만들었어.
+
+# 네가 해야 할 게 이제 toolbox를 클릭하면 지금은 드라이버만 인벤토리에 들어가는데 
+# 여기서 클릭하면 열린 모습으로 바뀌게 만들면 돼.
+
+# 만약 궁금한 거 있으면 물어봐
+
 
 class StorageState:
-    def __init__(self, image_directory, screen_width, screen_height, screen):
-        self.script_directory = image_directory
+    def __init__(self, screen_width, screen_height, screen, inventory_equipped_item):
         self.screen_width = screen_width
         self.screen_height = screen_height
         self.game_state = "storage"
         self.screen = screen
+        self.inventory_equipped_item = inventory_equipped_item
+        
         self.script_directory = os.path.dirname(os.path.abspath(__file__))
         
-        self.storage_battery_path = os.path.join(self.script_directory, "../image/storage/storage_bettery.png")
-        self.storage_door_path_path = os.path.join(self.script_directory, "../image/storage/storage_door.png")
+        self.storage_battery_path = os.path.join(self.script_directory, "../image/storage/storage_battery.png")
+        self.storage_door_path = os.path.join(self.script_directory, "../image/storage/storage_door.png")
         self.storage_frame_path = os.path.join(self.script_directory, "../image/storage/storage_frame.png")
         self.storage_gunpowderbox_path = os.path.join(self.script_directory, "../image/storage/storage_gunpowderbox.png")
         self.storage_toolbox_screwdriver_path = os.path.join(self.script_directory, "../image/storage/storage_toolbox_screwdriver.png")
         self.storage_toolbox_path = os.path.join(self.script_directory, "../image/storage/storage_toolbox.png")
-        self.storage_keycard_path = os.path.join(self.script_directory, "../image/storage/storage_keycard.png")
-        self.storage_closedbox_path = os.path.join(self.script_directory, "../image/storage/storage_closedbox.png")
-        self.storage_openbox_path = os.path.join(self.script_directory, "../image/storage/storage_openbox.png")
+        self.storage_keycard_path = os.path.join(self.script_directory, "../image/storage/KeyKard.png")
+        self.storage_closedbox_path = os.path.join(self.script_directory, "../image/storage/ClosedBox.png")
+        self.storage_openbox_path = os.path.join(self.script_directory, "../image/storage/OpenBox.png")
         self.storage_closedbox = pygame.image.load(self.storage_closedbox_path)
         self.storage_openbox = pygame.image.load(self.storage_openbox_path)
         self.storage_battery = pygame.image.load(self.storage_battery_path)
-        self.storage_frame =  pygame.image.load(self.storage_door_path_path)
+        self.storage_frame =  pygame.image.load(self.storage_frame_path)
         self.storage_gunpowderbox =  pygame.image.load(self.storage_gunpowderbox_path)
-        self.storage_toolbox = pygame.image.load(self.storage_toolbox)
-        self.storage_door = pygame.image.load(self.storage_door)
-        self.storage_keycard = pygame.image.load(self.storage_keycard)
-        self.storage_toolbox_screwdriver = pygame.image.load(self.storage_toolbox_screwdriver)
+        self.storage_toolbox = pygame.image.load(self.storage_toolbox_path)
+        self.storage_door = pygame.image.load(self.storage_door_path)
+        self.storage_keycard = pygame.image.load(self.storage_keycard_path)
+        self.storage_toolbox_screwdriver = pygame.image.load(self.storage_toolbox_screwdriver_path)
         self.storage_toolbox_screwdriver_rect = self.storage_toolbox_screwdriver.get_rect()
         self.storage_battery_rect = self.storage_battery.get_rect()
         self.storage_frame_rect = self.storage_frame.get_rect()
@@ -45,7 +54,8 @@ class StorageState:
         self.storage_toolbox_rect.center = (screen_width// 3.5, screen_height// 1.5)
         self.storage_door_rect.center = (100, screen_height // 1.8)
         
-        
+        self.show_text = False
+        self.noclick = False
         self.inventory = None
         self.inventory_items = []
         self.inventory_visible = False
@@ -55,6 +65,8 @@ class StorageState:
         self.storage_box_text = False
         self.inventory_equipped_item = None
         self.equipped_item = None  # 현재 장착된 아이템을 저장하는 변수
+        self.text_start_time = None
+        self.one_time = True
         
         self.num_rows = 4
         self.num_cols = 4
@@ -76,64 +88,36 @@ class StorageState:
     def handle_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
             if self.inventory == "storage":
-                for row in range(self.num_rows):
-                    for col in range(self.num_cols):
-                        slot_x = self.inventory_x + col * (self.slot_size + self.slot_margin)
-                        slot_y = self.inventory_y + row * (self.slot_size + self.slot_margin)
-                        slot_rect = pygame.Rect(slot_x, slot_y, self.slot_size, self.slot_size)
-                        
-                        if slot_rect.collidepoint(event.pos):
-                                self.slot_clicked = True  # 슬롯 클릭되었음을 표시
-                        if self.slot_clicked:
-                            for row in range(self.num_rows):
-                                for col in range(self.num_cols):
-                                    slot_x = self.inventory_x + col * (self.slot_size + self.slot_margin)
-                                    slot_y = self.inventory_y + row * (self.slot_size + self.slot_margin)
-                                    slot_rect = pygame.Rect(slot_x, slot_y, self.slot_size, self.slot_size)
-
-                                    if slot_rect.collidepoint(event.pos):
-                                        clicked_item_index = col + row * self.num_cols
-                                        if clicked_item_index < len(self.inventory_items):
-                                            self.equipped_item = self.inventory_items[clicked_item_index]  # 클릭한 아이템을 장착
-                                            self.slot_clicked = False  # 슬롯 클릭 해제
+                pass
             else:
-                if self.storage_toolbox_rect.collidedict(event.pos):
+                if self.storage_toolbox_rect.collidepoint(event.pos):
                     self.inventory_items.append(self.storage_toolbox_screwdriver)
                 elif self.storage_frame_rect.collidepoint(event.pos):
                     #인벤토리에 "드라이버"있는지 확인하는 if 명령어 ~~~
-                    
                     self.inventory_items.remove(self.storage_toolbox_screwdriver)
                     self.storage_frame_state = False
-                elif self.storage_closedbox_rect.collidedict(event.pos):
+                elif self.storage_closedbox_rect.collidepoint(event.pos):
                     #인벤토리에 "부엌 키" 있는지 확인하는 if 명령어 ~~~
-                    
-                    self.inventory_items.remove(self.restingroom_kitchen_key)
+                    #self.inventory_items.remove(self.restingroom_kitchen_key)
                     self.storage_box_state = True
                     self.storage_box_text = True
                     self.inventory_items.append(self.storage_keycard)
-                    
-                    
-                    
-                    
-                    
-                    
-                
-            
-            
-            
-            
-            
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+        if event.type == pygame.KEYDOWN:  # 키보드 이벤트 처리
+            if event.key == pygame.K_e :
+                if self.inventory != "inventory" and not self.show_text:
+                    self.inventory = "inventory"
+                else:
+                    self.inventory = None  # 인벤토리를 닫을 때는 원래 상태로 돌아가기
+            elif event.key == pygame.K_z:
+                if self.storage_box_text and self.one_time:
+                    self.text_start_time = None  # 텍스트 시작 시간 초기화
+                    self.show_text = False
+                    self.storage_box_text = False
+                    self.one_time = False
+                else:
+                    self.text_start_time = None  # 텍스트 시작 시간 초기화
+                    self.show_text = False
+                    self.storage_box_text = False
     
     def show_text_box(self, text, elapsed_time):
         text_box_rect = pygame.Rect(50, self.screen_height - 220, self.screen_width - 100, 200)
@@ -148,17 +132,11 @@ class StorageState:
         text_surface = font.render(visible_text, True, (0,0,0))
         text_rect = text_surface.get_rect(center=text_box_rect.center)
         self.screen.blit(text_surface, text_rect)
-        if self.storage_box_state:
-            self.screen.blit(self.storage_openbox, self.storage_openbox_rect)
-            if self.storage_box_text: 
-                self.show_text = True
-                if self.text_start_time is None:
-                    self.text_start_time = pygame.time.get_ticks()
-                self.elapsed_time = pygame.time.get_ticks() - self.text_start_time
-                self.show_text_box("보안실 키 카드를(을) 획득했다!", self.elapsed_time)
+        
                 
                 
-                
+    def get_inventory_items(self):
+        return self.inventory_items
                 
     def draw(self, screen):
         screen.blit(self.storage_battery, self.storage_battery_rect)
@@ -167,50 +145,19 @@ class StorageState:
         screen.blit(self.storage_door, self.storage_door_rect)
         if self.storage_frame_state:
             screen.blit(self.storage_frame, self.storage_frame_rect)
-            if not self.storage_box_state:
-                screen.blit(self.storage_closedbox, self.storage_closedbox)
-                
-    def get_inventory_items(self):
-        return self.inventory_items
-    
-    
-    def draw_inventory(self):
-        inventory_x = (self.screen_width - self.inventory_width) // 2
-        inventory_y = (self.screen_height - self.inventory_height) // 2
-
-        # 인벤토리 창 배경 그리기 (크기 조정 및 모서리 둥글게 처리)
-        border_radius = 20  # 모서리의 둥글기 정도 설정
-        pygame.draw.rect(self.screen, self.black, (inventory_x-10, inventory_y-10, self.inventory_width+10, self.inventory_height+10), border_radius=border_radius)
-
-        slot_index = 0  # 슬롯의 인덱스 초기화
-        for row in range(self.num_rows):
-            for col in range(self.num_cols):
-                slot_x = inventory_x + col * (self.slot_size + self.slot_margin)
-                slot_y = inventory_y + row * (self.slot_size + self.slot_margin)
-                pygame.draw.rect(self.screen, self.gray, (slot_x, slot_y, self.slot_size, self.slot_size))
-
-                # 인벤토리 아이템 텍스트를 그리기
-                item_index = col + row * self.num_cols
-                if item_index < len(self.inventory_items):
-                    item_image = self.inventory_items[item_index]
-
-                    item_image_rect = item_image.get_rect()
-                    item_image_rect.center = (slot_x + self.slot_size // 2, slot_y + self.slot_size // 2)
-                    self.screen.blit(item_image, item_image_rect)
-
-        for row in range(self.num_rows):
-            for col in range(self.num_cols):
-                slot_x = inventory_x + col * (self.slot_size + self.slot_margin)
-                slot_y = inventory_y + row * (self.slot_size + self.slot_margin)
-                slot_rect = pygame.Rect(slot_x, slot_y, self.slot_size, self.slot_size)
-
-                pygame.draw.rect(self.screen, self.gray, slot_rect)
-
-                item_index = col + row * self.num_cols
-                if item_index < len(self.inventory_items):
-                    item_image = self.inventory_items[item_index]
-                    item_image_rect = item_image.get_rect(center=slot_rect.center)
-                    self.screen.blit(item_image, item_image_rect)
-
-                slot_index += 1  # 슬롯 인덱스 증가
-                    
+        if self.storage_box_state:
+            self.screen.blit(self.storage_openbox, self.storage_openbox_rect)
+            if self.storage_box_text and self.one_time: 
+                self.show_text = True
+                if self.text_start_time is None:
+                    self.text_start_time = pygame.time.get_ticks()
+                self.elapsed_time = pygame.time.get_ticks() - self.text_start_time
+                self.show_text_box("보안실 키 카드를(을) 획득했다!", self.elapsed_time)
+            elif self.storage_box_text and not self.one_time:
+                self.show_text = True
+                if self.text_start_time is None:
+                    self.text_start_time = pygame.time.get_ticks()
+                self.elapsed_time = pygame.time.get_ticks() - self.text_start_time
+                self.show_text_box("상자는 비어있다.", self.elapsed_time)
+        else:
+            screen.blit(self.storage_closedbox, self.storage_closedbox_rect)

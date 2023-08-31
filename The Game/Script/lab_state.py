@@ -10,7 +10,7 @@ class LabState:
         self.inventory_equipped_item = inventory_equipped_item
 
         self.script_directory = os.path.dirname(os.path.abspath(__file__))
-        
+
         # lab_state에 필요한 초기화 코드 작성
         self.lab_computer_flag = False
         self.password = ""
@@ -106,6 +106,7 @@ class LabState:
 
         self.equipped_item = None  # 현재 장착된 아이템을 저장하는 변수
 
+
     def handle_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
             if self.inventory == "inventory" or self.noclick:
@@ -190,7 +191,7 @@ class LabState:
     
 
     def draw(self, screen):
-        screen.blit(self.lab, self.lab_rect)
+        #creen.blit(self.lab, self.lab_rect)
         screen.blit(self.lab_clock, self.lab_clock_rect)
         screen.blit(self.lab_computer, self.lab_computer_rect)
         screen.blit(self.lab_door, self.lab_door_rect)

@@ -3,6 +3,8 @@ import os
 import start_state
 import lab_state
 import hollway_state
+import storage_state
+
 
 black = (0, 0, 0)
 white = (255, 255, 255)
@@ -48,6 +50,7 @@ game_state = "start"
 start_state = start_state.StartState(screen_width, screen_height)
 lab_state = lab_state.LabState(screen_width, screen_height, screen, inventory_equipped_item)
 hollway_state = hollway_state.HollwayState(screen_width, screen_height, screen)
+storage_state = storage_state.StorageState(screen_width, screen_height, screen, inventory_equipped_item)
 
 equipped_item = None  # 현재 장착된 아이템을 저장하는 변수
 
@@ -112,9 +115,19 @@ while running:
             game_state = lab_state.game_state
         elif game_state == "hollway":
             lab_state.game_state = "lab"
+            storage_state.game_state = "storage"
             inventory = hollway_state.inventory
             hollway_state.handle_event(event)
             game_state = hollway_state.game_state
+        elif game_state == "storage":
+            hollway_state.game_state = "hollway"
+            game_state = storage_state.game_state
+            inventory = storage_state.inventory
+            new_items = storage_state.inventory_items
+            for item in new_items:
+                if item not in inventory_items:
+                    inventory_items.append(item)
+            storage_state.handle_event(event)
 
     screen.fill(white)
 
@@ -124,6 +137,8 @@ while running:
         lab_state.draw(screen)
     elif game_state == "hollway":
         hollway_state.draw(screen)
+    elif game_state == "storage":
+        storage_state.draw(screen)
 
     if inventory == "inventory":
             draw_inventory()  # 인벤토리 창 그리기
