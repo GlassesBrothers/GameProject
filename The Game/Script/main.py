@@ -172,6 +172,14 @@ while running:
             lab_state.inventory_equipped_item = "lab_switch"
         elif equipped_item == lab_state.keykard:
             lab_state.inventory_equipped_item = "keykard"
+        elif equipped_item == storage_state.storage_toolbox_screwdriver:
+            storage_state.inventory_equipped_item = "storage_toolbox_screwdriver"
+        elif equipped_item == storage_state.restingroom_kitchen_key:
+            storage_state.inventory_equipped_item = "restingroom_kitchen_key"
+        
+        
+             
+        
 
     pygame.display.flip()
 
