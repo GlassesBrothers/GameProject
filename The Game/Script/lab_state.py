@@ -14,6 +14,11 @@ class LabState:
         # lab_state에 필요한 초기화 코드 작성
         self.lab_computer_flag = False
         self.password = ""
+        self.computer_screen_text = [
+            "K_HyBin's Pc",
+            "login",
+            "Please enter your password"
+        ]
         self.login_pass = False
         self.lab_switch_flag = True
         self.lab_wire_flag = True
@@ -106,16 +111,13 @@ class LabState:
 
         self.equipped_item = None  # 현재 장착된 아이템을 저장하는 변수
 
-        self.computer_width = 400  # 컴퓨터 화면 너비
-        self.computer_height = 300  # 컴퓨터 화면 높이
+        self.computer_width = 920  # 컴퓨터 화면 너비
+        self.computer_height = 480  # 컴퓨터 화면 높이
 
         self.lab_computer_screen = pygame.Surface((self.computer_width, self.computer_height))  # 컴퓨터 화면을 그릴 Surface 생성
         self.lab_computer_screen.fill((200, 200, 200))  # 회색 배경으로 초기화
         self.lab_computer_screen_rect = self.lab_computer_screen.get_rect()
         self.lab_computer_screen_rect.center = (screen_width // 2, screen_height // 2)  # 화면 중앙에 위치
-
-
-
 
     def handle_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
@@ -126,6 +128,7 @@ class LabState:
                     print("시계다")
                 elif self.lab_computer_rect.collidepoint(event.pos):
                     self.lab_computer_flag = True
+                    self.noclick = True
                 elif self.lab_door_rect.collidepoint(event.pos):
                     self.game_state = "hollway"  
                     # self.show_lab_door_text = True
@@ -183,6 +186,20 @@ class LabState:
                         self.show_lab_door_text = False
                         self.keydoor_flag = False
                         self.noclick = False
+                if self.lab_computer_flag:
+                        self.lab_computer_flag = False
+                        self.noclick = False
+            if self.lab_computer_flag :
+                if event.key == pygame.K_BACKSPACE:  # 백스페이스 키 처리
+                    self.password = self.password[:-1]  # 마지막 문자 제거
+                elif event.key == pygame.K_RETURN:  # 엔터 키 처리
+                    if self.password == "0415":  # 입력한 비밀번호가 올바른지 확인
+                        self.login_pass = True
+                    elif not self.login_pass:
+                        print("잘못된 비밀번호!")
+                    self.password = ""  # 비밀번호 입력 초기화
+                else:
+                    self.password += event.unicode  # 눌린 키를 비밀번호에 추가
 
     def show_text_box(self, text, elapsed_time):
         self.show_text = True
@@ -275,3 +292,24 @@ class LabState:
             # 흰색 내부를 그립니다.
             pygame.draw.rect(self.screen, (255, 255, 255), (self.lab_computer_screen_rect.left, self.lab_computer_screen_rect.top, self.computer_width, self.computer_height))
             screen.blit(self.lab_computer_screen, self.lab_computer_screen_rect)
+
+            # 컴퓨터 화면 텍스트 렌더링
+            if not self.login_pass:
+                text_y = self.screen_height // 3  # 화면의 중앙에 텍스트를 렌더링하기 위한 y 좌표
+                for line in self.computer_screen_text:
+                    font = pygame.font.Font(None, 36)  # 폰트와 크기 설정
+                    text_surface = font.render(line, True, self.black)  # 텍스트 렌더링
+                    text_rect = text_surface.get_rect(center=(self.screen_width // 2, text_y))
+                    screen.blit(text_surface, text_rect)  # 텍스트 화면에 렌더링
+                    text_y += 50  # 다음 텍스트 줄을 그리기 위해 y 좌표 증가
+                
+                # 비밀번호 입력 상자 그리기
+                password_input_rect = pygame.Rect(self.screen_width // 2 - 150, text_y + 300, 300, 50)
+                pygame.draw.rect(screen, (255, 255, 255), password_input_rect)
+                font = pygame.font.Font(None, 36)
+                password_name = font.render("password : ", True, self.black)
+                screen.blit(password_name, (self.screen_width // 2 - 150, text_y))
+                password_surface = font.render(self.password, True, self.black)
+                screen.blit(password_surface, (self.screen_width // 2, text_y))
+            else :
+                pass
