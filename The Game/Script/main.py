@@ -127,6 +127,8 @@ while running:
             for item in new_items:
                 if item not in inventory_items:
                     inventory_items.append(item)
+                if item in inventory_items:
+                    inventory_items.remove(item)
             storage_state.handle_event(event)
 
     screen.fill(white)
