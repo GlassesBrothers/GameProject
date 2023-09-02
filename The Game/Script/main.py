@@ -108,6 +108,7 @@ while running:
             hollway_state.game_state = "hollway"
             inventory = lab_state.inventory
             new_items = lab_state.inventory_items
+            show_text = lab_state.show_text
             for item in new_items:
                 if item not in inventory_items:
                     inventory_items.append(item)
@@ -124,11 +125,10 @@ while running:
             game_state = storage_state.game_state
             inventory = storage_state.inventory
             new_items = storage_state.inventory_items
+            storage_state.handle_event(event)
             for item in new_items:
                 if item not in inventory_items:
                     inventory_items.append(item)
-            storage_state.handle_event(event)
-
     screen.fill(white)
 
     if game_state == "start":
@@ -173,10 +173,11 @@ while running:
         box_surface = pygame.Surface((box_size, box_size), pygame.SRCALPHA)  # 투명한 Surface 생성
         pygame.draw.rect(box_surface, (0, 0, 0), pygame.Rect(0, 0, box_size, box_size), 3)  # 테두리 그리기
 
-        # 박스 배경을 투명하게 설정하고 장착된 아이템 이미지 그리기
-        screen.blit(box_surface, (equipped_item_rect.left - (box_size - equipped_item_rect.width) / 2,
-                            equipped_item_rect.top - (box_size - equipped_item_rect.height) / 2))
-        screen.blit(equipped_item, equipped_item_image_rect)  # 아이템 이미지 표시
+        if not show_text:
+            # 박스 배경을 투명하게 설정하고 장착된 아이템 이미지 그리기
+            screen.blit(box_surface, (equipped_item_rect.left - (box_size - equipped_item_rect.width) / 2,
+                                equipped_item_rect.top - (box_size - equipped_item_rect.height) / 2))
+            screen.blit(equipped_item, equipped_item_image_rect)  # 아이템 이미지 표시
 
         # 아이템 종류에 따라 inventory_equipped_item 설정
         if equipped_item == lab_state.inventory_wire:

@@ -80,6 +80,7 @@ class StorageState:
         self.equipped_item = None  # 현재 장착된 아이템을 저장하는 변수
         self.text_start_time = None
         self.one_time = True
+        self.one_time2 = True
         self.storage_toolbox_state = False
         self.storage_toolbox_text = False
         
@@ -115,7 +116,7 @@ class StorageState:
                 elif self.storage_frame_rect.collidepoint(event.pos):
                     print("액자")
                     #if self.equipped_item == self.storage_toolbox_screwdriver:
-                    if self.storage_toolbox_screwdriver in self.inventory_items:
+                    if self.inventory_equipped_item == "storage_toolbox_screwdriver":
                         self.inventory_items.remove(self.storage_toolbox_screwdriver)
                         print("드라이버 사라짐")
                         self.storage_frame_state = False
@@ -150,11 +151,11 @@ class StorageState:
                     self.storage_toolbox_text = False
                 
                 
-                if self.storage_box_text and self.one_time:
+                if self.storage_box_text and self.one_time2:
                     self.text_start_time = None  # 텍스트 시작 시간 초기화
                     self.show_text = False
                     self.storage_box_text = False
-                    self.one_time = False
+                    self.one_time2 = False
 
                 else:
                     self.text_start_time = None  # 텍스트 시작 시간 초기화
@@ -212,14 +213,14 @@ class StorageState:
         else:
             if self.storage_box_state:
                 self.screen.blit(self.OpenBox, self.OpenBox_rect)
-                if self.storage_box_text and self.one_time: 
+                if self.storage_box_text and self.one_time2: 
                     self.show_text = True
                     if self.text_start_time is None:
                         self.text_start_time = pygame.time.get_ticks()
                     self.elapsed_time = pygame.time.get_ticks() - self.text_start_time
                     self.show_text_box("보안실 키 카드를(을) 획득했다!", self.elapsed_time)
                     pygame.display.flip()
-                elif self.storage_box_text and not self.one_time:
+                elif self.storage_box_text and not self.one_time2:
                     self.show_text = True
                     if self.text_start_time is None:
                         self.text_start_time = pygame.time.get_ticks()

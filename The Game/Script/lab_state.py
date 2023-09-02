@@ -295,11 +295,12 @@ class LabState:
 
             # 컴퓨터 화면 텍스트 렌더링
             if not self.login_pass:
+                text_x = self.screen_width // 2
                 text_y = self.screen_height // 3  # 화면의 중앙에 텍스트를 렌더링하기 위한 y 좌표
                 for line in self.computer_screen_text:
                     font = pygame.font.Font(None, 36)  # 폰트와 크기 설정
                     text_surface = font.render(line, True, self.black)  # 텍스트 렌더링
-                    text_rect = text_surface.get_rect(center=(self.screen_width // 2, text_y))
+                    text_rect = text_surface.get_rect(center=(text_x, text_y))
                     screen.blit(text_surface, text_rect)  # 텍스트 화면에 렌더링
                     text_y += 50  # 다음 텍스트 줄을 그리기 위해 y 좌표 증가
                 
