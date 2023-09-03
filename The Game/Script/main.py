@@ -127,8 +127,6 @@ while running:
             for item in new_items:
                 if item not in inventory_items:
                     inventory_items.append(item)
-                if item in inventory_items:
-                    inventory_items.remove(item)
             storage_state.handle_event(event)
 
     screen.fill(white)
@@ -136,7 +134,7 @@ while running:
     if game_state == "start":
         start_state.draw(screen)
     elif game_state == "lab":
-        lab_state.draw(screen)
+        lab_state.draw(screen, event)
     elif game_state == "hollway":
         hollway_state.draw(screen)
     elif game_state == "storage":

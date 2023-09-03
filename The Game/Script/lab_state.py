@@ -12,13 +12,25 @@ class LabState:
         self.script_directory = os.path.dirname(os.path.abspath(__file__))
 
         # lab_state에 필요한 초기화 코드 작성
+        self.font = pygame.font.Font(None, 36)
         self.lab_computer_flag = False
         self.password = ""
+        self.username = ""
+        self.input_username = ""
+        self.input_password = ""
+        self.username_entered = False  # 아이디 입력이 완료되었는지 여부를 나타내는 변수
         self.computer_screen_text = [
             "K_HyBin's Pc",
             "login",
             "Please enter your password"
         ]
+        self.noZ = False
+        self.folder_flag = False
+        self.folder2_flag = False
+        self.folder3_flag = False
+        self.txt_flag = False
+        self.txt2_flag = False
+        self.txt3_flag = False
         self.login_pass = False
         self.lab_switch_flag = True
         self.lab_wire_flag = True
@@ -53,7 +65,29 @@ class LabState:
         
         
         # ... (다른 이미지들 로드 및 Rect 설정)
-        
+        self.folder_path = os.path.join(self.script_directory, "../image/Other/folder.png")
+        self.folder = pygame.image.load(self.folder_path)
+        self.folder_rect = self.folder.get_rect()
+        self.txt_path = os.path.join(self.script_directory, "../image/Other/txt.png")
+        self.txt = pygame.image.load(self.txt_path)
+        self.txt_rect = self.txt.get_rect()
+        self.ID_txt_path = os.path.join(self.script_directory, "../image/Other/ID_txt.png")
+        self.ID_txt = pygame.image.load(self.ID_txt_path)
+        self.ID_txt_rect = self.ID_txt.get_rect()
+        self.folder2 = pygame.image.load(self.folder_path)
+        self.folder2_rect = self.folder2.get_rect()
+        self.txt2 = pygame.image.load(self.txt_path)
+        self.txt2_rect = self.txt2.get_rect()
+        self.instruction_path = os.path.join(self.script_directory, "../image/Other/instruction.png")
+        self.instruction = pygame.image.load(self.instruction_path)
+        self.instruction_rect = self.instruction.get_rect()
+        self.folder3 = pygame.image.load(self.folder_path)
+        self.folder3_rect = self.folder3.get_rect()
+        self.txt3 = pygame.image.load(self.txt_path)
+        self.txt3_rect = self.txt3.get_rect()
+        self.mybrith_path = os.path.join(self.script_directory, "../image/Other/mybrith.png")
+        self.mybrith = pygame.image.load(self.mybrith_path)
+        self.mybrith_rect = self.mybrith.get_rect()
         self.lab_path = os.path.join(self.script_directory, "../image/lab/lab.png")
         self.lab_clock_path = os.path.join(self.script_directory, "../image/lab/lab_clock.png")
         self.lab_computer_path = os.path.join(self.script_directory, "../image/lab/lab_computer.png")
@@ -155,7 +189,7 @@ class LabState:
                     self.inventory = "inventory"
                 else:
                     self.inventory = None  # 인벤토리를 닫을 때는 원래 상태로 돌아가기
-            elif event.key == pygame.K_z:
+            elif event.key == pygame.K_z and not self.noZ:
                 if self.show_lab_profile_text:
                         # "z" 키를 누르면 텍스트 창을 숨깁니다.
                         self.show_lab_profile_text = False
@@ -186,20 +220,32 @@ class LabState:
                         self.show_lab_door_text = False
                         self.keydoor_flag = False
                         self.noclick = False
-                if self.lab_computer_flag:
+                if self.lab_computer_flag and not self.noZ:
                         self.lab_computer_flag = False
                         self.noclick = False
-            if self.lab_computer_flag :
-                if event.key == pygame.K_BACKSPACE:  # 백스페이스 키 처리
-                    self.password = self.password[:-1]  # 마지막 문자 제거
-                elif event.key == pygame.K_RETURN:  # 엔터 키 처리
-                    if self.password == "0415":  # 입력한 비밀번호가 올바른지 확인
-                        self.login_pass = True
-                    elif not self.login_pass:
-                        print("잘못된 비밀번호!")
-                    self.password = ""  # 비밀번호 입력 초기화
-                else:
-                    self.password += event.unicode  # 눌린 키를 비밀번호에 추가
+            if self.lab_computer_flag:
+                if not self.login_pass and not self.username_entered:
+                    if event.key == pygame.K_BACKSPACE:
+                        self.username = self.username[:-1]
+                    elif event.key == pygame.K_RETURN:
+                        if self.username == "Dawoo":
+                            self.username_entered = True
+                        else:
+                            print("잘못된 아이디!")
+                            self.username = ""  # 아이디 입력 초기화
+                    else:
+                        self.username += event.unicode  # event.unicode로 입력된 글자 가져오기
+                elif not self.login_pass:
+                    if event.key == pygame.K_BACKSPACE:
+                        self.password = self.password[:-1]
+                    elif event.key == pygame.K_RETURN:
+                        if self.username == "Dawoo" and self.password == "0415":
+                            self.login_pass = True
+                        elif not self.login_pass:
+                            print("잘못된 비밀번호!")
+                        self.password = ""  # 비밀번호 입력 초기화
+                    else:
+                        self.password += event.unicode  # event.unicode로 입력된 글자 가져오기
 
     def show_text_box(self, text, elapsed_time):
         self.show_text = True
@@ -220,8 +266,13 @@ class LabState:
     def get_inventory_items(self):
         return self.inventory_items
     
+    # 화면에 텍스트 렌더링 함수
+    def draw_text(self, text, pos):
+        text_surface = self.font.render(text, True, (0, 0, 0))
+        text_rect = text_surface.get_rect(center=pos)
+        self.screen.blit(text_surface, text_rect)
 
-    def draw(self, screen):
+    def draw(self, screen, event):
         #creen.blit(self.lab, self.lab_rect)
         screen.blit(self.lab_clock, self.lab_clock_rect)
         screen.blit(self.lab_computer, self.lab_computer_rect)
@@ -286,30 +337,114 @@ class LabState:
                 self.show_text_box("ID카드가 망가졌는지 열리지 않는다.", self.elapsed_time)
                 pygame.display.flip()
         if self.lab_computer_flag:
-            # 검은 테두리를 그립니다
+            # 검은 테두리를 그립니다.
+            self.x_button_x = self.lab_computer_screen_rect.right - 20
+            self.x_button_y = self.lab_computer_screen_rect.top
             pygame.draw.rect(self.screen, (0, 0, 0), (self.lab_computer_screen_rect.left - 5, self.lab_computer_screen_rect.top - 5, self.computer_width + 10, self.computer_height + 10), 5)            
             
             # 흰색 내부를 그립니다.
             pygame.draw.rect(self.screen, (255, 255, 255), (self.lab_computer_screen_rect.left, self.lab_computer_screen_rect.top, self.computer_width, self.computer_height))
             screen.blit(self.lab_computer_screen, self.lab_computer_screen_rect)
-
+            pygame.draw.rect(screen, (255, 0, 0), (self.x_button_x, self.x_button_y, 20, 20))
+            
             # 컴퓨터 화면 텍스트 렌더링
             if not self.login_pass:
                 text_y = self.screen_height // 3  # 화면의 중앙에 텍스트를 렌더링하기 위한 y 좌표
-                for line in self.computer_screen_text:
-                    font = pygame.font.Font(None, 36)  # 폰트와 크기 설정
-                    text_surface = font.render(line, True, self.black)  # 텍스트 렌더링
-                    text_rect = text_surface.get_rect(center=(self.screen_width // 2, text_y))
-                    screen.blit(text_surface, text_rect)  # 텍스트 화면에 렌더링
-                    text_y += 50  # 다음 텍스트 줄을 그리기 위해 y 좌표 증가
-                
-                # 비밀번호 입력 상자 그리기
-                password_input_rect = pygame.Rect(self.screen_width // 2 - 150, text_y + 300, 300, 50)
-                pygame.draw.rect(screen, (255, 255, 255), password_input_rect)
-                font = pygame.font.Font(None, 36)
-                password_name = font.render("password : ", True, self.black)
-                screen.blit(password_name, (self.screen_width // 2 - 150, text_y))
-                password_surface = font.render(self.password, True, self.black)
-                screen.blit(password_surface, (self.screen_width // 2, text_y))
-            else :
-                pass
+                for i, line in enumerate(self.computer_screen_text):
+                    text_y += 80  # 다음 텍스트 줄을 그리기 위해 y 좌표 증가 (50에서 80으로 변경)
+                if i == 2:
+                    self.draw_text("ID : " + self.username, (self.screen_width // 2, text_y - 50))
+                    # 비밀번호 입력 중에는 마스킹 처리 (e.g., '*****')
+                    masked_password = '*' * len(self.password)
+                    self.draw_text("Password : " + masked_password, (self.screen_width // 2, text_y))
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if pygame.Rect(self.x_button_x, self.x_button_y, 20, 20).collidepoint(event.pos):  # X 표시를 눌렀는지 확인
+                        self.lab_computer_flag = False
+                        self.noclick = False
+                        self.noZ = False
+            else:
+                self.x_button_x = self.lab_computer_screen_rect.right - 20
+                self.x_button_y = self.lab_computer_screen_rect.top
+                self.folder_rect.center = (230, 150)
+                screen.blit(self.folder, self.folder_rect)
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if self.folder_rect.collidepoint(event.pos):
+                        self.folder_flag = True
+                        self.noZ = True
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if pygame.Rect(self.x_button_x, self.x_button_y, 20, 20).collidepoint(event.pos):  # X 표시를 눌렀는지 확인
+                        self.lab_computer_flag = False
+                        self.noclick = False
+                        self.noZ = False
+                if self.folder_flag:
+                    pygame.draw.rect(self.screen, (0, 0, 0), (235, 160, 210, 110), 5)
+                    pygame.draw.rect(screen, (255, 255, 255), (240, 165, 200, 100))
+                    pygame.draw.rect(screen, (255, 0, 0), (420, 165, 20, 20))
+                    self.txt_rect.center = (300, 210)
+                    screen.blit(self.txt, self.txt_rect)
+                    self.folder2_rect.center = (375, 210)
+                    screen.blit(self.folder2, self.folder2_rect)
+                    if event.type == pygame.MOUSEBUTTONDOWN:
+                        if self.txt_rect.collidepoint(event.pos) and not self.folder2_flag:
+                            self.txt_flag = True
+                            self.folder2_flag = False
+                        if self.folder2_rect.collidepoint(event.pos) and not self.txt_flag:
+                            self.folder2_flag = True
+                            self.txt_flag = False
+                        if pygame.Rect(420, 165, 20, 20).collidepoint(event.pos):  # X 표시를 눌렀는지 확인
+                            self.folder_flag = False
+                            self.noZ = False
+                    if self.txt_flag and not self.folder2_flag:
+                        self.ID_txt_rect.center = (self.screen_width // 2, self.screen_height // 2)
+                        screen.blit(self.ID_txt, self.ID_txt_rect)
+                        pygame.draw.rect(self.screen, (0, 0, 0), (246, 141, 790, 434), 5)
+                        pygame.draw.rect(screen, (255, 0, 0), (1012, 146, 20, 20))
+                        if event.type == pygame.MOUSEBUTTONDOWN:
+                            if pygame.Rect(1012, 146, 20, 20).collidepoint(event.pos):  # X 표시를 눌렀는지 확인
+                                self.txt_flag = False
+                    if self.folder2_flag and not self.txt_flag:
+                        pygame.draw.rect(self.screen, (0, 0, 0), (380, 220, 210, 110), 5)
+                        pygame.draw.rect(screen, (255, 255, 255), (385, 225, 200, 100))
+                        pygame.draw.rect(screen, (255, 0, 0), (565, 225, 20, 20))
+                        self.txt2_rect.center = (445, 270)
+                        screen.blit(self.txt2, self.txt2_rect)
+                        self.folder3_rect.center = (520, 270)
+                        screen.blit(self.folder3, self.folder3_rect)
+                        if event.type == pygame.MOUSEBUTTONDOWN:
+                            if self.txt2_rect.collidepoint(event.pos) and not self.folder3_flag:
+                                self.txt2_flag = True
+                            if self.folder3_rect.collidepoint(event.pos) and not self.txt2_flag:
+                                self.folder3_flag = True
+                            if pygame.Rect(565, 225, 20, 20).collidepoint(event.pos):  # X 표시를 눌렀는지 확인
+                                self.folder2_flag = False
+                        if self.txt2_flag:
+                            self.instruction_rect.center = (self.screen_width // 2, self.screen_height // 2)
+                            screen.blit(self.instruction, self.instruction_rect)
+                            pygame.draw.rect(self.screen, (0, 0, 0), (23, 27, 1239, 667), 5)
+                            pygame.draw.rect(screen, (255, 0, 0), (1237, 32, 20, 20))
+                            if event.type == pygame.MOUSEBUTTONDOWN:
+                                if pygame.Rect(1237, 32, 20, 20).collidepoint(event.pos):  # X 표시를 눌렀는지 확인
+                                    self.txt2_flag = False
+                        if self.folder3_flag:
+                            pygame.draw.rect(self.screen, (0, 0, 0), (525, 280, 210, 110), 5)
+                            pygame.draw.rect(screen, (255, 255, 255), (530, 285, 200, 100))
+                            pygame.draw.rect(screen, (255, 0, 0), (710, 285, 20, 20))
+                            self.txt3_rect.center = (590, 330)
+                            screen.blit(self.txt3, self.txt3_rect)
+                            if event.type == pygame.MOUSEBUTTONDOWN:
+                                if self.txt3_rect.collidepoint(event.pos):
+                                    self.txt3_flag = True
+                                if pygame.Rect(710, 285, 20, 20).collidepoint(event.pos):  # X 표시를 눌렀는지 확인
+                                    self.folder3_flag = False
+                            if self.txt3_flag:
+                                self.mybrith_rect.center = (self.screen_width // 2, self.screen_height // 2)
+                                screen.blit(self.mybrith, self.mybrith_rect)
+                                pygame.draw.rect(self.screen, (0, 0, 0), (49, 234, 1182, 255), 5)
+                                pygame.draw.rect(screen, (255, 0, 0), (1206, 239, 20, 20))
+                                if event.type == pygame.MOUSEBUTTONDOWN:
+                                    if pygame.Rect(1206, 239, 20, 20).collidepoint(event.pos):  # X 표시를 눌렀는지 확인
+                                        self.txt3_flag = False
+                        
+                        
+        else:
+            pass
