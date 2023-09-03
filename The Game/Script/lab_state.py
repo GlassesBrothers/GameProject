@@ -326,7 +326,7 @@ class LabState:
             if self.text_start_time is None:
                 self.text_start_time = pygame.time.get_ticks()
             self.elapsed_time = pygame.time.get_ticks() - self.text_start_time
-            self.show_text_box("뒷면에는 Dawoo라는 글자와 0412이라는 숫자가 적혀 있다.", self.elapsed_time)
+            self.show_text_box("뒷면에는 Dawoo라는 글자와 0415이라는 숫자가 적혀 있다.", self.elapsed_time)
             pygame.display.flip()
         
         if self.inventory_equipped_item == "keykard" and self.keydoor_flag:
