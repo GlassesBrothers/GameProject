@@ -3,6 +3,7 @@ import os
 import start_state
 import lab_state
 import hollway_state
+import restingroom_state
 #import storage_state
 
 
@@ -44,11 +45,12 @@ pygame.display.set_caption('The Game')
 
 
 # 게임 상태 정의
-game_state = "start"
+game_state = "hollway"
 
 # 시작 화면과 연구실 화면 객체 생성
 start_state = start_state.StartState(screen_width, screen_height)
 lab_state = lab_state.LabState(screen_width, screen_height, screen, inventory_equipped_item)
+restingroom_state = restingroom_state.RestingroomState(screen_width, screen_height, screen, inventory_equipped_item)
 hollway_state = hollway_state.HollwayState(screen_width, screen_height, screen)
 #storage_state = storage_state.StorageState(screen_width, screen_height, screen, inventory_equipped_item)
 
@@ -116,7 +118,9 @@ while running:
         elif game_state == "hollway":
             lab_state.game_state = "lab"
             #storage_state.game_state = "storage"
+            restingroom_state.game_state = "restingroom"
             inventory = hollway_state.inventory
+            new_items = hollway_state.inventory_items
             hollway_state.handle_event(event)
             game_state = hollway_state.game_state
         elif game_state == "storage":
@@ -124,10 +128,19 @@ while running:
             #game_state = storage_state.game_state
             #inventory = storage_state.inventory
             #new_items = storage_state.inventory_items
+            # for item in new_items:
+            #     if item not in inventory_items:
+            #         inventory_items.append(item)
+            #storage_state.handle_event(event)
+        elif game_state == "restingroom":
+            hollway_state.game_state = "hollway"
+            restingroom_state.game_state = "restingroom"
+            inventory = restingroom_state.inventory
+            new_items = restingroom_state.inventory_items
             for item in new_items:
                 if item not in inventory_items:
                     inventory_items.append(item)
-            #storage_state.handle_event(event)
+            restingroom_state.handle_event(event)
 
     screen.fill(white)
 
@@ -140,6 +153,8 @@ while running:
     elif game_state == "storage":
         #storage_state.draw(screen)
         pass
+    elif game_state == "restingroom":
+        restingroom_state.draw(screen, event)
 
     if inventory == "inventory":
             draw_inventory()  # 인벤토리 창 그리기
@@ -183,9 +198,9 @@ while running:
             screen.blit(equipped_item, equipped_item_image_rect)  # 아이템 이미지 표시
 
         # 아이템 종류에 따라 inventory_equipped_item 설정
-        if equipped_item == lab_state.inventory_wire:
+        if equipped_item == lab_state.lab_wire:
             lab_state.inventory_equipped_item = "lab_wire"
-        elif equipped_item == lab_state.inventory_switch:
+        elif equipped_item == lab_state.lab_switch:
             lab_state.inventory_equipped_item = "lab_switch"
         elif equipped_item == lab_state.keyCard:
             lab_state.inventory_equipped_item = "keykard"
