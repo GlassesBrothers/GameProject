@@ -3,7 +3,7 @@ import os
 import start_state
 import lab_state
 import hollway_state
-import storage_state
+#import storage_state
 
 
 black = (0, 0, 0)
@@ -50,7 +50,7 @@ game_state = "start"
 start_state = start_state.StartState(screen_width, screen_height)
 lab_state = lab_state.LabState(screen_width, screen_height, screen, inventory_equipped_item)
 hollway_state = hollway_state.HollwayState(screen_width, screen_height, screen)
-storage_state = storage_state.StorageState(screen_width, screen_height, screen, inventory_equipped_item)
+#storage_state = storage_state.StorageState(screen_width, screen_height, screen, inventory_equipped_item)
 
 equipped_item = None  # 현재 장착된 아이템을 저장하는 변수
 
@@ -115,19 +115,19 @@ while running:
             game_state = lab_state.game_state
         elif game_state == "hollway":
             lab_state.game_state = "lab"
-            storage_state.game_state = "storage"
+            #storage_state.game_state = "storage"
             inventory = hollway_state.inventory
             hollway_state.handle_event(event)
             game_state = hollway_state.game_state
         elif game_state == "storage":
             hollway_state.game_state = "hollway"
-            game_state = storage_state.game_state
-            inventory = storage_state.inventory
-            new_items = storage_state.inventory_items
+            #game_state = storage_state.game_state
+            #inventory = storage_state.inventory
+            #new_items = storage_state.inventory_items
             for item in new_items:
                 if item not in inventory_items:
                     inventory_items.append(item)
-            storage_state.handle_event(event)
+            #storage_state.handle_event(event)
 
     screen.fill(white)
 
@@ -138,7 +138,8 @@ while running:
     elif game_state == "hollway":
         hollway_state.draw(screen)
     elif game_state == "storage":
-        storage_state.draw(screen)
+        #storage_state.draw(screen)
+        pass
 
     if inventory == "inventory":
             draw_inventory()  # 인벤토리 창 그리기
@@ -173,22 +174,25 @@ while running:
         box_surface = pygame.Surface((box_size, box_size), pygame.SRCALPHA)  # 투명한 Surface 생성
         pygame.draw.rect(box_surface, (0, 0, 0), pygame.Rect(0, 0, box_size, box_size), 3)  # 테두리 그리기
 
-        # 박스 배경을 투명하게 설정하고 장착된 아이템 이미지 그리기
-        screen.blit(box_surface, (equipped_item_rect.left - (box_size - equipped_item_rect.width) / 2,
-                            equipped_item_rect.top - (box_size - equipped_item_rect.height) / 2))
-        screen.blit(equipped_item, equipped_item_image_rect)  # 아이템 이미지 표시
+        if lab_state.show_text or hollway_state.show_text:
+            pass
+        else:
+            # 박스 배경을 투명하게 설정하고 장착된 아이템 이미지 그리기
+            screen.blit(box_surface, (equipped_item_rect.left - (box_size - equipped_item_rect.width) / 2,
+                                equipped_item_rect.top - (box_size - equipped_item_rect.height) / 2))
+            screen.blit(equipped_item, equipped_item_image_rect)  # 아이템 이미지 표시
 
         # 아이템 종류에 따라 inventory_equipped_item 설정
         if equipped_item == lab_state.inventory_wire:
             lab_state.inventory_equipped_item = "lab_wire"
         elif equipped_item == lab_state.inventory_switch:
             lab_state.inventory_equipped_item = "lab_switch"
-        elif equipped_item == lab_state.keykard:
+        elif equipped_item == lab_state.keyCard:
             lab_state.inventory_equipped_item = "keykard"
-        elif equipped_item == storage_state.storage_toolbox_screwdriver:
-            storage_state.inventory_equipped_item = "storage_toolbox_screwdriver"
-        elif equipped_item == storage_state.restingroom_kitchen_key:
-            storage_state.inventory_equipped_item = "restingroom_kitchen_key"
+        # elif equipped_item == storage_state.storage_toolbox_screwdriver:
+        #     storage_state.inventory_equipped_item = "storage_toolbox_screwdriver"
+        # elif equipped_item == storage_state.restingroom_kitchen_key:
+        #     storage_state.inventory_equipped_item = "restingroom_kitchen_key"
 
     pygame.display.flip()
 

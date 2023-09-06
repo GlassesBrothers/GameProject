@@ -11,11 +11,11 @@ class HollwayState:
 
         self.script_directory = os.path.dirname(os.path.abspath(__file__))
 
-        self.exitdoor_path = os.path.join(self.script_directory, "../image/hollway/hollway_exit.png")
-        self.labdoor_path = os.path.join(self.script_directory, "../image/hollway/hollway_lab_door.png")
-        self.retiringdoor_path = os.path.join(self.script_directory, "../image/hollway/hollway_retiringroom_door.png")
-        self.storagedoor_path = os.path.join(self.script_directory, "../image/hollway/hollway_storage_door.png")
-        self.seciritydoor_path = os.path.join(self.script_directory, "../image/hollway/hollway_securityroom_door.png")
+        self.exitdoor_path = os.path.join(self.script_directory, "../image/Hollway/Hollway_Exit.png")
+        self.labdoor_path = os.path.join(self.script_directory, "../image/Hollway/Hollway_Lab_Door.png")
+        self.retiringdoor_path = os.path.join(self.script_directory, "../image/Hollway/Hollway_RestingRoom_Door.png")
+        self.storagedoor_path = os.path.join(self.script_directory, "../image/Hollway/Hollway_Storage_Door.png")
+        self.seciritydoor_path = os.path.join(self.script_directory, "../image/Hollway/Hollway_InformationSecurityRoom_Door.png")
         self.exitdoor = pygame.image.load(self.exitdoor_path)
         self.labdoor = pygame.image.load(self.labdoor_path)
         self.retiringdoor = pygame.image.load(self.retiringdoor_path)

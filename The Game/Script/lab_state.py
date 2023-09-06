@@ -224,6 +224,7 @@ class LabState:
                         self.lab_computer_flag = False
                         self.noclick = False
             if self.lab_computer_flag:
+                if self.computer_
                 if not self.login_pass and not self.username_entered:
                     if event.key == pygame.K_BACKSPACE:
                         self.username = self.username[:-1]
