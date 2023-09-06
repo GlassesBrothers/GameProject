@@ -15,7 +15,7 @@ class RestingroomState:
         # 텍스트 바가 있는지 없는지 나타냄(True -> o, False -> x)
         self.show_text = False
         
-        # 텍스트 또는 인벤토리 상태일 때 클릭 상호작용 안 되게 만드는 불 변수
+        # 텍스트 또는 인벤토리 상태일 때 클릭 상호작용 안 되게 만드는 불 변수s
         self.noclick = False
 
         # Z키를 누르면 안될 때 사용해야 하는 불 변수
