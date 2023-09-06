@@ -11,23 +11,25 @@ class HollwayState:
 
         self.script_directory = os.path.dirname(os.path.abspath(__file__))
 
-        self.Hollway_background_path = os.path.join(self.script_directory, "..image/Hollway/Hollway_background.png")
+        self.Hollway_background_path = os.path.join(self.script_directory, "../image/Hollway/Hollway_background.png")
         self.exitdoor_path = os.path.join(self.script_directory, "../image/Hollway/Hollway_Exit.png")
         self.labdoor_path = os.path.join(self.script_directory, "../image/Hollway/Hollway_Lab_Door.png")
         self.retiringdoor_path = os.path.join(self.script_directory, "../image/Hollway/Hollway_RestingRoom_Door.png")
         self.storagedoor_path = os.path.join(self.script_directory, "../image/Hollway/Hollway_Storage_Door.png")
         self.seciritydoor_path = os.path.join(self.script_directory, "../image/Hollway/Hollway_InformationSecurityRoom_Door.png")
-        self.Hollway_background = pygame.image
+        self.Hollway_background = pygame.image.load(self.Hollway_background_path)
         self.exitdoor = pygame.image.load(self.exitdoor_path)
         self.labdoor = pygame.image.load(self.labdoor_path)
         self.retiringdoor = pygame.image.load(self.retiringdoor_path)
         self.storagedoor = pygame.image.load(self.storagedoor_path)
         self.seciritydoor = pygame.image.load(self.seciritydoor_path)
+        self.Hollway_background_rect = self.Hollway_background.get_rect()
         self.exitdoor_rect = self.exitdoor.get_rect()
         self.labdoor_rect = self.labdoor.get_rect()
         self.retiringdoor_rect = self.retiringdoor.get_rect()
         self.storagedoor_rect = self.storagedoor.get_rect()
         self.seciritydoor_rect = self.seciritydoor.get_rect()
+        self.Hollway_background_rect.center = (screen_width // 2, screen_height // 2)
         self.exitdoor_rect.center = (screen_width // 2, screen_height // 2)
         self.labdoor_rect.center = (screen_width // 5.0, screen_height // 2)
         self.retiringdoor_rect.center = (screen_width // 2.6, screen_height // 2)
@@ -84,6 +86,7 @@ class HollwayState:
         self.screen.blit(text_surface, text_rect)
     
     def draw(self, screen):
+        screen.blit(self.Hollway_background, self.Hollway_background_rect)
         screen.blit(self.exitdoor, self.exitdoor_rect)
         screen.blit(self.labdoor, self.labdoor_rect)
         screen.blit(self.retiringdoor, self.retiringdoor_rect)
