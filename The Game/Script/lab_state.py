@@ -24,7 +24,19 @@ class LabState:
             "login",
             "Please enter your password"
         ]
+        # PIN 입력에 필요한 초기화 코드 추가
+        self.pin = ""  # 빈 문자열로 초기화
+        self.pin_input_active = False  # PIN 입력 활성화 여부
+        self.pin_entered = False
+        self.buttons_visible = False  # 버튼 표시 여부
+        self.button1_rect = pygame.Rect(535, 295, 200, 50)  # 첫 번째 버튼 위치와 크기
+        self.button2_rect = pygame.Rect(535, 395, 200, 50)  # 두 번째 버튼 위치와 크기
+        self.button_font = pygame.font.Font(None, 36)  # 버튼 폰트 설정
+        self.button1_text = self.button_font.render("Open", True, (0, 0, 0))  # 첫 번째 버튼 텍스트 렌더링
+        self.button2_text = self.button_font.render("Lock", True, (0, 0, 0))  # 두 번째 버튼 텍스트 렌더링
+        self.door_state = "Lock"
         self.noZ = False
+        self.computer_Lock_flag = False
         self.folder_flag = False
         self.folder2_flag = False
         self.folder3_flag = False
@@ -32,6 +44,7 @@ class LabState:
         self.txt2_flag = False
         self.txt3_flag = False
         self.login_pass = False
+        self.lab_door_flag = False
         self.lab_switch_flag = True
         self.lab_wire_flag = True
         self.lab_profile_flag = True
@@ -45,6 +58,7 @@ class LabState:
         self.text_start_time = None
         self.show_lab_door_text = False
         self.show_lab_researcher_text = False
+        self.lab_clock_text = False
         self.one_time = True
         self.keydoor_flag = False
         self.keykard_flag = True
@@ -60,11 +74,14 @@ class LabState:
         self.inventory_wire_path = os.path.join(self.script_directory, "../image/inventory_items/inventory_wire.png")
         self.inventory_switch = pygame.image.load(self.inventory_switch_path)
         self.inventory_wire = pygame.image.load(self.inventory_wire_path)
-        self.keykard_path = os.path.join(self.script_directory, "../image/lab/keykard.png")
-        self.keykard = pygame.image.load(self.keykard_path)
+        self.keyCard_path = os.path.join(self.script_directory, "../image/lab/lab_keyCard.png")
+        self.keyCard = pygame.image.load(self.keyCard_path)
         
         
         # ... (다른 이미지들 로드 및 Rect 설정)
+        self.computer_Lock_path = os.path.join(self.script_directory, "../image/Other/computer_Lock.png")
+        self.computer_Lock = pygame.image.load(self.computer_Lock_path)
+        self.computer_Lock_rect = self.computer_Lock.get_rect()
         self.folder_path = os.path.join(self.script_directory, "../image/Other/folder.png")
         self.folder = pygame.image.load(self.folder_path)
         self.folder_rect = self.folder.get_rect()
@@ -88,7 +105,7 @@ class LabState:
         self.mybrith_path = os.path.join(self.script_directory, "../image/Other/mybrith.png")
         self.mybrith = pygame.image.load(self.mybrith_path)
         self.mybrith_rect = self.mybrith.get_rect()
-        self.lab_path = os.path.join(self.script_directory, "../image/lab/lab.png")
+        self.lab_background_path = os.path.join(self.script_directory, "../image/lab/Lab_background.png")
         self.lab_clock_path = os.path.join(self.script_directory, "../image/lab/lab_clock.png")
         self.lab_computer_path = os.path.join(self.script_directory, "../image/lab/lab_computer.png")
         self.lab_door_path = os.path.join(self.script_directory, "../image/lab/lab_door.png")
@@ -96,7 +113,7 @@ class LabState:
         self.lab_profile_path = os.path.join(self.script_directory, "../image/lab/lab_profile.png")
         self.lab_switch_path = os.path.join(self.script_directory, "../image/lab/lab_switch.png")
         self.lab_wire_path = os.path.join(self.script_directory, "../image/lab/lab_wire.png")
-        self.lab = pygame.image.load(self.lab_path)
+        self.lab_background = pygame.image.load(self.lab_background_path)
         self.lab_clock = pygame.image.load(self.lab_clock_path)
         self.lab_computer = pygame.image.load(self.lab_computer_path)
         self.lab_door = pygame.image.load(self.lab_door_path)
@@ -104,7 +121,7 @@ class LabState:
         self.lab_profile = pygame.image.load(self.lab_profile_path)
         self.lab_switch = pygame.image.load(self.lab_switch_path)
         self.lab_wire = pygame.image.load(self.lab_wire_path)
-        self.lab_rect = self.lab.get_rect()
+        self.lab_background_rect = self.lab_background.get_rect()
         self.lab_clock_rect = self.lab_clock.get_rect()
         self.lab_computer_rect = self.lab_computer.get_rect()
         self.lab_door_rect = self.lab_door.get_rect()
@@ -112,14 +129,14 @@ class LabState:
         self.lab_profile_rect = self.lab_profile.get_rect()
         self.lab_switch_rect = self.lab_switch.get_rect()
         self.lab_wire_rect = self.lab_wire.get_rect()
-        self.lab_rect.center = (screen_width // 2, screen_height // 2)
-        self.lab_clock_rect.center = (screen_width // 1.3, 100)
+        self.lab_background_rect.center = (screen_width // 2, screen_height // 2)
+        self.lab_clock_rect.topleft = (673, 55)
         self.lab_computer_rect.center = (screen_width // 2.5, screen_height // 2)
-        self.lab_door_rect.center = (100, screen_height // 1.8)
-        self.lab_researcher_rect.center = (screen_width - 100, screen_height // 1.5)
-        self.lab_profile_rect.center = (screen_width // 1.3, screen_height // 2)
-        self.lab_switch_rect.center = (screen_width // 1.7, screen_height // 2)
-        self.lab_wire_rect.center = (screen_width // 1.5, screen_height // 2)
+        self.lab_door_rect.topleft = (0, 154)
+        self.lab_researcher_rect.topleft = (955, 370)
+        self.lab_profile_rect.topleft = (832, 442)
+        self.lab_switch_rect.topleft = (350, 441)
+        self.lab_wire_rect.topleft = (188, 436)
 
         # 다른 상호작용 요소의 상태
         self.inventory_items = []
@@ -148,6 +165,11 @@ class LabState:
         self.computer_width = 920  # 컴퓨터 화면 너비
         self.computer_height = 480  # 컴퓨터 화면 높이
 
+        self.computer_background_path = os.path.join(self.script_directory, "../image/Other/computer_background.png")
+        self.computer_background = pygame.image.load(self.computer_background_path)
+        self.computer_background_rect = self.computer_background.get_rect()
+        self.computer_background_rect.center = (screen_width // 2, screen_height // 2)
+
         self.lab_computer_screen = pygame.Surface((self.computer_width, self.computer_height))  # 컴퓨터 화면을 그릴 Surface 생성
         self.lab_computer_screen.fill((200, 200, 200))  # 회색 배경으로 초기화
         self.lab_computer_screen_rect = self.lab_computer_screen.get_rect()
@@ -159,17 +181,19 @@ class LabState:
                 pass
             else:
                 if self.lab_clock_rect.collidepoint(event.pos):
-                    print("시계다")
+                    self.lab_clock_text = True
                 elif self.lab_computer_rect.collidepoint(event.pos):
                     self.lab_computer_flag = True
                     self.noclick = True
                 elif self.lab_door_rect.collidepoint(event.pos):
-                    self.game_state = "hollway"  
-                    # self.show_lab_door_text = True
-                    # self.keydoor_flag = True
+                    if self.lab_door_flag:
+                        self.game_state = "hollway"
+                    else:
+                        self.show_lab_door_text = True
+                        self.keydoor_flag = True
                 elif self.lab_researcher_rect.collidepoint(event.pos):
                     if self.keykard_flag:
-                        self.inventory_items.append(self.keykard)
+                        self.inventory_items.append(self.keyCard)
                         self.keykard_flag = False
                     self.show_lab_researcher_text = True
                 elif self.lab_profile_rect.collidepoint(event.pos):
@@ -178,11 +202,11 @@ class LabState:
                 elif self.lab_switch_rect.collidepoint(event.pos) and self.lab_switch_flag :
                     self.lab_switch_flag = False
                     self.show_lab_switch_text = True  # 텍스트 표시 플래그 활성화
-                    self.inventory_items.append(self.inventory_switch)
+                    self.inventory_items.append(self.lab_switch)
                 elif self.lab_wire_rect.collidepoint(event.pos) and self.lab_wire_flag :
                     self.lab_wire_flag = False
                     self.show_lab_wire_text = True
-                    self.inventory_items.append(self.inventory_wire)
+                    self.inventory_items.append(self.lab_wire)
         if event.type == pygame.KEYDOWN:  # 키보드 이벤트 처리
             if event.key == pygame.K_e :
                 if self.inventory != "inventory" and not self.show_text:
@@ -207,6 +231,7 @@ class LabState:
                         self.show_lab_researcher_text = False
                         self.noclick = False
                 else :
+                        self.lab_clock_text = False
                         self.show_lab_switch_text = False
                         self.show_lab_wire_text = False
                         self.text_start_time = None  # 텍스트 시작 시간 초기화
@@ -224,7 +249,25 @@ class LabState:
                         self.lab_computer_flag = False
                         self.noclick = False
             if self.lab_computer_flag:
-                if self.computer_
+                if self.pin_input_active and not self.pin_entered:
+                    if event.key == pygame.K_BACKSPACE:
+                        self.pin = self.pin[:-1]  # 마지막 문자를 삭제
+                    elif event.key == pygame.K_RETURN:
+                        if len(self.pin) == 4:  # 4자리 PIN이 입력되었는지 확인
+                            # 여기에 PIN 검증 로직을 추가하세요.
+                            # 예를 들어, 올바른 PIN인지 확인하는 조건문을 작성하세요.
+                            if self.pin == "0412":
+                                self.pin_entered = True
+                                self.buttons_visible = True
+                            else:
+                                print('no')
+                                self.pin = ""
+                        else:
+                            print('no')
+                            self.pin = ""  # 입력한 PIN 초기화
+                    elif event.key >= pygame.K_0 and event.key <= pygame.K_9 and len(self.pin) < 4:
+                        self.pin += event.unicode  # 입력된 숫자를 PIN에 추가
+                    # 더 많은 키 이벤트 처리를 추가할 수 있습니다.
                 if not self.login_pass and not self.username_entered:
                     if event.key == pygame.K_BACKSPACE:
                         self.username = self.username[:-1]
@@ -240,7 +283,7 @@ class LabState:
                     if event.key == pygame.K_BACKSPACE:
                         self.password = self.password[:-1]
                     elif event.key == pygame.K_RETURN:
-                        if self.username == "Dawoo" and self.password == "0415":
+                        if self.username == "Dawoo" and self.password == "20514":
                             self.login_pass = True
                         elif not self.login_pass:
                             print("잘못된 비밀번호!")
@@ -273,8 +316,19 @@ class LabState:
         text_rect = text_surface.get_rect(center=pos)
         self.screen.blit(text_surface, text_rect)
 
+    def draw_pin_input(self, screen):
+            # PIN 입력 창 그리기
+            pin_box_rect = pygame.Rect(self.lab_computer_screen_rect.centerx - 100, self.lab_computer_screen_rect.centery - 50, 200, 40)
+            pygame.draw.rect(screen, (255, 255, 255), pin_box_rect)
+            pygame.draw.rect(screen, (0, 0, 0), pin_box_rect, 2)
+
+            font = pygame.font.Font(None, 36)
+            pin_text = font.render(self.pin, True, (0, 0, 0))
+            pin_text_rect = pin_text.get_rect(center=pin_box_rect.center)
+            screen.blit(pin_text, pin_text_rect)
+
     def draw(self, screen, event):
-        #creen.blit(self.lab, self.lab_rect)
+        screen.blit(self.lab_background, self.lab_background_rect)
         screen.blit(self.lab_clock, self.lab_clock_rect)
         screen.blit(self.lab_computer, self.lab_computer_rect)
         screen.blit(self.lab_door, self.lab_door_rect)
@@ -300,6 +354,12 @@ class LabState:
                 self.elapsed_time = pygame.time.get_ticks() - self.text_start_time
                 self.show_text_box("낡은 스위치를 흭득했다.", self.elapsed_time)
                 pygame.display.flip()
+        if self.lab_clock_text:
+            self.show_text = True
+            if self.text_start_time is None:
+                self.text_start_time = pygame.time.get_ticks()
+            self.elapsed_time = pygame.time.get_ticks() - self.text_start_time
+            self.show_text_box("이상하게 시침과 분침이 고정되어 있다.", self.elapsed_time)
         if not self.lab_profile_flag :
             screen.blit(self.lab_profile_image, self.lab_profile_image_rect)
             self.noclick = True
@@ -327,10 +387,11 @@ class LabState:
             if self.text_start_time is None:
                 self.text_start_time = pygame.time.get_ticks()
             self.elapsed_time = pygame.time.get_ticks() - self.text_start_time
-            self.show_text_box("뒷면에는 Dawoo라는 글자와 0415이라는 숫자가 적혀 있다.", self.elapsed_time)
+            self.show_text_box("뒷면에는 Dawoo라는 글자와 20514이라는 숫자가 적혀 있다.", self.elapsed_time)
             pygame.display.flip()
         
         if self.inventory_equipped_item == "keykard" and self.keydoor_flag:
+                print('1')
                 self.show_text = True
                 if self.text_start_time is None:
                     self.text_start_time = pygame.time.get_ticks()
@@ -345,11 +406,13 @@ class LabState:
             
             # 흰색 내부를 그립니다.
             pygame.draw.rect(self.screen, (255, 255, 255), (self.lab_computer_screen_rect.left, self.lab_computer_screen_rect.top, self.computer_width, self.computer_height))
-            screen.blit(self.lab_computer_screen, self.lab_computer_screen_rect)
+
+            # X 표시 그리기
             pygame.draw.rect(screen, (255, 0, 0), (self.x_button_x, self.x_button_y, 20, 20))
             
             # 컴퓨터 화면 텍스트 렌더링
             if not self.login_pass:
+                screen.blit(self.lab_computer_screen, self.lab_computer_screen_rect)
                 text_y = self.screen_height // 3  # 화면의 중앙에 텍스트를 렌더링하기 위한 y 좌표
                 for i, line in enumerate(self.computer_screen_text):
                     text_y += 80  # 다음 텍스트 줄을 그리기 위해 y 좌표 증가 (50에서 80으로 변경)
@@ -364,19 +427,72 @@ class LabState:
                         self.noclick = False
                         self.noZ = False
             else:
+                screen.blit(self.computer_background, self.computer_background_rect)
+                pygame.draw.rect(screen, (255, 0, 0), (self.x_button_x, self.x_button_y, 20, 20))
                 self.x_button_x = self.lab_computer_screen_rect.right - 20
                 self.x_button_y = self.lab_computer_screen_rect.top
                 self.folder_rect.center = (230, 150)
                 screen.blit(self.folder, self.folder_rect)
+                self.computer_Lock_rect.topleft = (205, 190)
+                screen.blit(self.computer_Lock, self.computer_Lock_rect)
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    if self.folder_rect.collidepoint(event.pos):
+                    if self.folder_rect.collidepoint(event.pos) and not self.computer_Lock_flag:
                         self.folder_flag = True
                         self.noZ = True
+                    if self.computer_Lock_rect.collidepoint(event.pos) and not self.folder_flag:
+                        self.computer_Lock_flag = True
+                        self.pin_input_active = True
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if pygame.Rect(self.x_button_x, self.x_button_y, 20, 20).collidepoint(event.pos):  # X 표시를 눌렀는지 확인
                         self.lab_computer_flag = False
                         self.noclick = False
                         self.noZ = False
+                        self.folder_flag = False
+                        self.folder2_flag = False
+                        self.folder3_flag = False
+                        self.computer_Lock_flag = False
+                if self.computer_Lock_flag:
+                    pygame.draw.rect(self.screen, (0, 0, 0), (483, 189, 300, 350), 5)
+                    pygame.draw.rect(self.screen, (255, 255, 255), (488, 194, 290, 340))
+                    pygame.draw.rect(screen, (255, 0, 0), (759, 194, 20, 20))
+                    if event.type == pygame.MOUSEBUTTONDOWN:
+                        if pygame.Rect(759, 194, 20, 20).collidepoint(event.pos):  # X 표시를 눌렀는지 확인
+                            self.computer_Lock_flag = False
+                    if self.pin_input_active and not self.pin_entered:
+                        # PIN 입력 창 그리기
+                        self.draw_pin_input(screen)
+                        # 여기에 더 많은 PIN 입력 창 관련 코드를 추가하세요.
+                    
+                    elif self.buttons_visible:
+                        if self.lab_door_flag:
+                            self.door_state = "Open"
+                            self.draw_text("Door System : ", (592, 237))
+                            self.door_state_surface = self.font.render(self.door_state, True, (0, 255, 0))
+                            self.door_state_rect = self.door_state_surface.get_rect(topleft=(682, 227))
+                            screen.blit(self.door_state_surface, self.door_state_rect)
+                        else:
+                            self.door_state = "Lock"
+                            self.draw_text("Door System : ", (592, 237))
+                            self.door_state_surface = self.font.render(self.door_state, True, (255, 0, 0))
+                            self.door_state_rect = self.door_state_surface.get_rect(topleft=(682, 227))
+                            screen.blit(self.door_state_surface, self.door_state_rect)
+                        # 버튼 표시
+                        pygame.draw.rect(screen, (0, 0, 0), self.button1_rect, 2)
+                        pygame.draw.rect(screen, (0, 0, 0), self.button2_rect, 2)
+                        # 버튼 텍스트 중앙 정렬
+                        button1_text_rect = self.button1_text.get_rect(center=self.button1_rect.center)
+                        button2_text_rect = self.button2_text.get_rect(center=self.button2_rect.center)
+
+                        # 버튼 텍스트 그리기
+                        screen.blit(self.button1_text, button1_text_rect.topleft)
+                        screen.blit(self.button2_text, button2_text_rect.topleft)
+                        if event.type == pygame.MOUSEBUTTONDOWN:
+                            if self.button1_rect.collidepoint(event.pos):
+                                # 첫 번째 버튼을 클릭했을 때 수행할 동작 추가
+                                self.lab_door_flag = True
+                            elif self.button2_rect.collidepoint(event.pos):
+                                # 두 번째 버튼을 클릭했을 때 수행할 동작 추가
+                                self.lab_door_flag = False
                 if self.folder_flag:
                     pygame.draw.rect(self.screen, (0, 0, 0), (235, 160, 210, 110), 5)
                     pygame.draw.rect(screen, (255, 255, 255), (240, 165, 200, 100))
