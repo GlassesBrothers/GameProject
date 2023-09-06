@@ -32,7 +32,7 @@ class HollwayState:
         self.Hollway_background_rect.center = (screen_width // 2, screen_height // 2)
         self.exitdoor_rect.center = (screen_width // 2, screen_height // 2)
         self.labdoor_rect.center = (screen_width // 5.0, screen_height // 2)
-        self.retiringdoor_rect.center = (screen_width // 2.6, screen_height // 2)
+        self.retiringdoor_rect.topleft = (58, 131)
         self.storagedoor_rect.center = (screen_width // 1.6, screen_height // 2)
         self.seciritydoor_rect.center = (screen_width // 1.3 , screen_height // 2)
 
@@ -49,6 +49,7 @@ class HollwayState:
 
     def handle_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
+            print(pygame.mouse.get_pos())
             if self.inventory == "inventory" or self.noclick:
                 pass
             else:

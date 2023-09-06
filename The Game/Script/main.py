@@ -125,7 +125,7 @@ while running:
             game_state = hollway_state.game_state
         elif game_state == "storage":
             hollway_state.game_state = "hollway"
-            #game_state = storage_state.game_state
+            #game_state = storage_state.game_state   
             #inventory = storage_state.inventory
             #new_items = storage_state.inventory_items
             # for item in new_items:
