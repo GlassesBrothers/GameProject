@@ -37,13 +37,45 @@ class RestingroomState:
         # 내가 'RestingRoom_background.png' 로 예시를 들어 볼게.
 
         # 게임 이미지 경로 설정
-        self.RestingRoom_background_path = os.path.join(self.script_directory, "../image/restingroom/RestingRoom_background.png")
+        self.RestingRoom_background_path = os.path.join(self.script_directory,
+         "../image/RestingRoom/RestingRoom_background.png")
+        self.RestingRoom_book_path = os.path.join(self.script_directory,
+         "../image/restingroom/RestingRoom_Book.png")
+        self.RestingRoom_door_path = os.path.join(self.script_directory,
+         "../image/restingroom/RestingRoom_Door.png")
+        self.RestingRoom_noplug_path = os.path.join(self.script_directory,
+         "../image/restingroom/RestingRoom_NoPlug.png")
+        self.RestingRoom_onplug_path = os.path.join(self.script_directory,
+         "../image/restingroom/RestingRoom_ONPlug.png")
+        self.RestingRoom_plant_path = os.path.join(self.script_directory,
+         "../image/restingroom/RestingRoom_Plant.png")
+        self.RestingRoom_plantnutrients_path = os.path.join(self.script_directory,
+         "../image/restingroom/RestingRoom_plant nutrients.png")
+        self.RestingRoom_tablitoff_path = os.path.join(self.script_directory,
+         "../image/restingroom/RestingRoom_TablitOff.png")
+        self.RestingRoom_tabliton_path = os.path.join(self.script_directory,
+         "../image/restingroom/RestingRoom_TablitOn.png")
 
         # 게임 이미지 불러오기
         self.RestingRoom_background = pygame.image.load(self.RestingRoom_background_path)
+        self.RestingRoom_book = pygame.image.load(self.RestingRoom_book_path)
+        self.RestingRoom_door = pygame.image.load(self.RestingRoom_door_path)
+        self.RestingRoom_noplug = pygame.image.load(self.RestingRoom_noplug_path)
+        self.RestingRoom_onplug = pygame.image.load(self.RestingRoom_onplug_path)
+        self.RestingRoom_plant = pygame.image.load(self.RestingRoom_plant_path)
+        self.RestingRoom_plantnutrients = pygame.image.load(self.RestingRoom_plantnutrients_path)
+        self.RestingRoom_tablitoff = pygame.image.load(self.RestingRoom_tablitoff_path)
+        self.RestingRoom_tabliton = pygame.image.load(self.RestingRoom_tabliton_path)
 
         # 게임 이미지 크기 구하기 및 위치 정하기
         self.RestingRoom_background_rect = self.RestingRoom_background.get_rect()
+        self.RestingRoom_book_rect = self.RestingRoom_book_rect.get_rect()
+        self.RestingRoom_door_rect = self.RestingRoom_door.get_rect()
+        self.RestingRoom_noplug_rect = self.RestingRoom_noplug.get_rect()
+        self.RestingRoom_plant_rect = self.RestingRoom_plant.get_rect()
+        self.RestingRoom_plantnutrients_rect = self.RestingRoom_plantnutrients.get_rect()
+        self.RestingRoom_tablitoff_rect = self.RestingRoom_tablitoff.get_rect()
+        self.RestingRoom_tabliton_rect = self.RestingRoom_tabliton.get_rect()
         # 여기선 .center를 사용했지만 그것 이외에도
         # 위쪽을 기점으로 하는 .top
         # 왼쪽 위 모서리를 기점으로 하는 .topleft
@@ -54,11 +86,32 @@ class RestingroomState:
         # 아래 코드는 이미지의 크기의 중심을 기점으로 화면 가로, 세로의 절반 좌표를 설정했어.
         # 이러면 딱 가운데에 맞춰지겠지.
         self.RestingRoom_background_rect.center = (self.screen_width // 2, self.screen_height // 2)
+        self.RestingRoom_book_rect.center = (80,80)
+        self.RestingRoom_door_rect.center = (200,800)
+        self.RestingRoom_noplug_rect.center = (200,50)
+        self.RestingRoom_plant_rect.center = (400,100)
+        self.RestingRoom_plantnutrients_rect.center = (600,600)
+        self.RestingRoom_tablitoff_rect.center = (1000,30)
+        self.RestingRoom_tabliton_rect.center = (1000,600)
         
+        # 이미지를 화면에 띄우는 부분
+        self.screen.blit(self.RestingRoom_background, self.RestingRoom_background_rect)
+        self.screen.blit(self.RestingRoom_book, self.RestingRoom_book_rect)
+        self.screen.blit(self.RestingRoom_door, self.RestingRoom_door_rect)
+        self.screen.blit(self.RestingRoom_noplug, self.RestingRoom_noplug_rect)
+        self.screen.blit(self.RestingRoom_plant, self.RestingRoom_plant_rect)
+        self.screen.blit(self.RestingRoom_plantnutrients, self.RestingRoom_plantnutrients_rect)
+        self.screen.blit(self.RestingRoom_tablitoff, self.RestingRoom_tablitoff_rect)
+        self.screen.blit(self.RestingRoom_tabliton, self.RestingRoom_tabliton_rect)
+
+        # 화면 업데이트
+        pygame.display.update()
+
     # 상호작용 및 다양한 게임 이벤트 함수
     def handle_event(self, event):
         # 파이게임 안에 마우스가 눌러졌을 때의 이벤트가 참인지 거짓인지 판단
         if event.type == pygame.MOUSEBUTTONDOWN:
+            print(pygame.mouse.get_pos())
             # 인벤토리가 켜져 있을 때 또는 클릭 불가가 켜져 있다면 상호작용이 안 되게 판단
             if self.inventory == "inventory" or self.noclick:
                 # 이건 건드릴 필요 없음
