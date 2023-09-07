@@ -30,11 +30,11 @@ class HollwayState:
         self.storagedoor_rect = self.storagedoor.get_rect()
         self.seciritydoor_rect = self.seciritydoor.get_rect()
         self.Hollway_background_rect.center = (screen_width // 2, screen_height // 2)
-        self.exitdoor_rect.center = (screen_width // 2, screen_height // 2)
-        self.labdoor_rect.center = (screen_width // 5.0, screen_height // 2)
-        self.retiringdoor_rect.topleft = (58, 131)
-        self.storagedoor_rect.center = (screen_width // 1.6, screen_height // 2)
-        self.seciritydoor_rect.center = (screen_width // 1.3 , screen_height // 2)
+        self.exitdoor_rect.topleft = (609, 224)
+        self.labdoor_rect.topright = (1240, 125)
+        self.retiringdoor_rect.topleft = (59, 140)
+        self.storagedoor_rect.topleft = (929, 172)
+        self.seciritydoor_rect.topleft = (309, 175)
 
         self.text_start_time = None
         self.show_text = False
@@ -90,6 +90,6 @@ class HollwayState:
         screen.blit(self.Hollway_background, self.Hollway_background_rect)
         screen.blit(self.exitdoor, self.exitdoor_rect)
         screen.blit(self.labdoor, self.labdoor_rect)
-        screen.blit(self.retiringdoor, self.retiringdoor_rect)
+        #screen.blit(self.retiringdoor, self.retiringdoor_rect)
         screen.blit(self.storagedoor, self.storagedoor_rect)
         screen.blit(self.seciritydoor, self.seciritydoor_rect)
