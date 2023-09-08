@@ -62,7 +62,7 @@ class HollwayState:
                 elif self.storagedoor_rect.collidepoint(event.pos):  # 이미지 위에서 클릭되었는지 확인
                     self.game_state = 'storage'
                 elif self.seciritydoor_rect.collidepoint(event.pos):  # 이미지 위에서 클릭되었는지 확인
-                    print('seciritydoor')
+                    self.game_state = "securityroom"
         if event.type == pygame.KEYDOWN:  # 키보드 이벤트 처리
             if event.key == pygame.K_e :
                 if self.inventory != "inventory" and not self.show_text:

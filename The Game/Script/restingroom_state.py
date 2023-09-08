@@ -69,7 +69,7 @@ class RestingroomState:
 
         # 게임 이미지 크기 구하기 및 위치 정하기
         self.RestingRoom_background_rect = self.RestingRoom_background.get_rect()
-        self.RestingRoom_book_rect = self.RestingRoom_book_rect.get_rect()
+        self.RestingRoom_book_rect = self.RestingRoom_book.get_rect()
         self.RestingRoom_door_rect = self.RestingRoom_door.get_rect()
         self.RestingRoom_noplug_rect = self.RestingRoom_noplug.get_rect()
         self.RestingRoom_plant_rect = self.RestingRoom_plant.get_rect()
@@ -94,18 +94,6 @@ class RestingroomState:
         self.RestingRoom_tablitoff_rect.center = (1000,30)
         self.RestingRoom_tabliton_rect.center = (1000,600)
         
-        # 이미지를 화면에 띄우는 부분
-        self.screen.blit(self.RestingRoom_background, self.RestingRoom_background_rect)
-        self.screen.blit(self.RestingRoom_book, self.RestingRoom_book_rect)
-        self.screen.blit(self.RestingRoom_door, self.RestingRoom_door_rect)
-        self.screen.blit(self.RestingRoom_noplug, self.RestingRoom_noplug_rect)
-        self.screen.blit(self.RestingRoom_plant, self.RestingRoom_plant_rect)
-        self.screen.blit(self.RestingRoom_plantnutrients, self.RestingRoom_plantnutrients_rect)
-        self.screen.blit(self.RestingRoom_tablitoff, self.RestingRoom_tablitoff_rect)
-        self.screen.blit(self.RestingRoom_tabliton, self.RestingRoom_tabliton_rect)
-
-        # 화면 업데이트
-        pygame.display.update()
 
     # 상호작용 및 다양한 게임 이벤트 함수
     def handle_event(self, event):

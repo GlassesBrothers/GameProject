@@ -72,8 +72,6 @@ class LabState:
         # 다른 상호작용 요소에 대한 초기화 코드 작성
         self.inventory_switch_path = os.path.join(self.script_directory, "../image/inventory_items/inventory_switch.png")
         self.inventory_wire_path = os.path.join(self.script_directory, "../image/inventory_items/inventory_wire.png")
-        self.inventory_switch = pygame.image.load(self.inventory_switch_path)
-        self.inventory_wire = pygame.image.load(self.inventory_wire_path)
         self.keyCard_path = os.path.join(self.script_directory, "../image/lab/lab_keyCard.png")
         self.keyCard = pygame.image.load(self.keyCard_path)
         

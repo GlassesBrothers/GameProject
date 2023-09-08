@@ -4,6 +4,7 @@ import start_state
 import lab_state
 import hollway_state
 import restingroom_state
+import securityroom_state
 #import storage_state
 
 
@@ -52,6 +53,7 @@ start_state = start_state.StartState(screen_width, screen_height)
 lab_state = lab_state.LabState(screen_width, screen_height, screen, inventory_equipped_item)
 restingroom_state = restingroom_state.RestingroomState(screen_width, screen_height, screen, inventory_equipped_item)
 hollway_state = hollway_state.HollwayState(screen_width, screen_height, screen)
+securityroom_state = securityroom_state.SecurityroomState(screen_width, screen_height, screen, inventory_equipped_item)
 #storage_state = storage_state.StorageState(screen_width, screen_height, screen, inventory_equipped_item)
 
 equipped_item = None  # 현재 장착된 아이템을 저장하는 변수
@@ -119,6 +121,7 @@ while running:
             lab_state.game_state = "lab"
             #storage_state.game_state = "storage"
             restingroom_state.game_state = "restingroom"
+            securityroom_state.game_state = "securityroom"
             inventory = hollway_state.inventory
             new_items = hollway_state.inventory_items
             hollway_state.handle_event(event)
@@ -134,7 +137,14 @@ while running:
             #storage_state.handle_event(event)
         elif game_state == "restingroom":
             hollway_state.game_state = "hollway"
-            restingroom_state.game_state = "restingroom"
+            inventory = securityroom_state.inventory
+            new_items = securityroom_state.inventory_items
+            for item in new_items:
+                if item not in inventory_items:
+                    inventory_items.append(item)
+            securityroom_state.handle_event(event)
+        elif game_state == "restingroom":
+            hollway_state.game_state = "hollway"
             inventory = restingroom_state.inventory
             new_items = restingroom_state.inventory_items
             for item in new_items:
@@ -155,6 +165,8 @@ while running:
         pass
     elif game_state == "restingroom":
         restingroom_state.draw(screen, event)
+    elif game_state == "securityroom":
+        securityroom_state.draw(screen, event)
 
     if inventory == "inventory":
             draw_inventory()  # 인벤토리 창 그리기

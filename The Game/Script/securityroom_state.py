@@ -1,38 +1,115 @@
 import pygame
 import os
 
-class SecurityState:
-    def __init__(self, image_directory, screen_width, screen_height, screen):
-        self.image_directory = image_directory
+class SecurityroomState:
+    def __init__(self, screen_width, screen_height, screen, inventory_equipped_item):
         self.screen_width = screen_width
         self.screen_height = screen_height
-        self.game_state = "lab"
+        self.game_state = "securityroom"
         self.screen = screen
+        self.inventory_equipped_item = inventory_equipped_item
 
+        # 상대경로 만들기
+        self.script_directory = os.path.dirname(os.path.abspath(__file__))
+
+        # 텍스트 바가 있는지 없는지 나타냄(True -> o, False -> x)
         self.show_text = False
+        
+        # 텍스트 또는 인벤토리 상태일 때 클릭 상호작용 안 되게 만드는 불 변수s
         self.noclick = False
+
+        # Z키를 누르면 안될 때 사용해야 하는 불 변수
+        self.noZ = False
+
+        # 인벤토리 아이템 목록 & 인벤토리 작동 or 비작동 함수
         self.inventory_items = []
         self.inventory = None
-        self.text_start_time = None
 
-        #이미지 파일 경로
-        pass
+        # 현재 장착된 아이템을 저장하는 변수
+        self.equipped_item = None  
 
+        # 기본 색 설정
+        self.black = (0, 0, 0)
+        self.white = (255, 255, 255)
+        self.gray = (200, 200, 200)
+
+        # 게임 이미지 경로 설정
+        self.secroom_background_path = os.path.join(self.script_directory,
+            "../image/InformationSecurityRoom\InformationSecurityRoom_background_PowerOff.png")
+
+        # 게임 이미지 불러오기
+        self.secroom_background = pygame.image.load(self.secroom_background_path)
+
+        # 게임 이미지 크기 구하기 및 위치 정하기
+        self.secroom_background_rect = self.secroom_background.get_rect()
+        self.secroom_background_rect.center = (self.screen_width // 2, self.screen_height // 2)
+
+    # 상호작용 및 다양한 게임 이벤트 함수
     def handle_event(self, event):
+        # 파이게임 안에 마우스가 눌러졌을 때의 이벤트가 참인지 거짓인지 판단
         if event.type == pygame.MOUSEBUTTONDOWN:
+            print(pygame.mouse.get_pos())
+            # 인벤토리가 켜져 있을 때 또는 클릭 불가가 켜져 있다면 상호작용이 안 되게 판단
             if self.inventory == "inventory" or self.noclick:
+                # 이건 건드릴 필요 없음
                 pass
             else:
-                if self.lab_clock_rect.collidepoint(event.pos):
-                    print("시계다")
-        if event.type == pygame.KEYDOWN:  # 키보드 이벤트 처리
-            if event.key == pygame.K_e :
-                if self.inventory != "inventory" and not self.show_text:
-                    self.inventory = "inventory"
-                else:
-                    self.inventory = None  # 인벤토리를 닫을 때는 원래 상태로 돌아가기
-            elif event.key == pygame.K_z:
                 pass
         
-    def draw(self, screen):
-        pass
+        # 키보드 이벤트 처리
+        if event.type == pygame.KEYDOWN:  
+            # 만약 키보드의 e를 눌렀을 때를 판단
+            if event.key == pygame.K_e :
+                # True면 inventory가 "inventory" 가 아니고 텍스트가 출력 중이 아닌지 다시 판단
+                if self.inventory != "inventory" and not self.show_text:
+                    # True면 inventory를 "inventory" 로 바꾸고 main.py에서 값을 받아서 인벤토리를 그려줘.
+                    self.inventory = "inventory"
+                else:
+                    # inventory = "inventory" 인 상태, 즉 켜져 있다면?
+                    # 인벤토리를 원래 상태로 돌아가기
+                    self.inventory = None
+            
+            # 만약 키보드의 z를 눌렀을 때 그리고 Z를 누를 수 있을 때 판단
+            elif event.key == pygame.K_z and not self.noZ:
+                # 출력을 중단하게 False로 바꾸고
+                self.show_text = False
+                # 클릭할 수 있게 False로 설정
+                self.noclick = False
+    
+    def show_text_box(self, text, elapsed_time):
+        # 출력 변수를 true로 설정하고 클릭할 수 없게 True로 설정
+        self.show_text = True
+        self.noclick = True
+
+        # 이건 텍스트 박스의 크기를 설정하는 거야
+        text_box_rect = pygame.Rect(50, self.screen_height - 220, self.screen_width - 100, 200)
+        
+        # 이게 설정한 텍스트 박스를 그려주는 코드.
+        pygame.draw.rect(self.screen, (0,0,0), text_box_rect)
+        pygame.draw.rect(self.screen, (255,255,255), text_box_rect.inflate(-5, -5))
+
+        # 폰트 설정
+        font = pygame.font.SysFont("malgungothic", 36)
+        
+        # 입력 내용을 받기 위한 변수 설정
+        visible_text = ""
+
+        # 네가 설정한 내용을 아까 전에 visible_text 안에 넣어주는 작업
+        # 이렇게 하면 텍스트가 100ms씩 차례대로 출력될 거야.
+        for i in range(len(text)):
+            if elapsed_time > i * 100:  # 글자마다 100ms씩 지연
+                visible_text += text[i]
+        
+        # 기본적으로 폰트는 blit로 그릴 수 없어.
+        # 그래서 폰트를 blit로 그릴 수 있는 surface로 렌더링하는 작업이야.
+        # 변수 이름 = font.render(텍스트 변수, True, 색깔)
+        text_surface = font.render(visible_text, True, (0,0,0))
+        
+        # 이건 텍스트 크기를 구하고 위치를 한번에 설정하는 작업 
+        text_rect = text_surface.get_rect(center=text_box_rect.center)
+
+        # 화면에 글씨를 그리는 작업
+        self.screen.blit(text_surface, text_rect)
+
+    def draw(self, screen, event):
+        screen.blit(self.secroom_background, self.secroom_background_rect)
