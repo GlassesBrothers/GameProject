@@ -28,21 +28,67 @@ class SecurityroomState:
         # 현재 장착된 아이템을 저장하는 변수
         self.equipped_item = None  
 
+        # 상호작용 이벤트 작동 여부
+        
+        # 컴퓨터 상호작용 불 변수
+        self.secroom_computer_off_flag = False
+
         # 기본 색 설정
         self.black = (0, 0, 0)
         self.white = (255, 255, 255)
         self.gray = (200, 200, 200)
 
         # 게임 이미지 경로 설정
-        self.secroom_background_path = os.path.join(self.script_directory,
-            "../image/InformationSecurityRoom\InformationSecurityRoom_background_PowerOff.png")
+        
+        # 배경 - off 버전
+        self.secroom_background_off_path = os.path.join(self.script_directory,
+            "../image/InformationSecurityRoom/InformationSecurityRoom_background_PowerOff.png")
+        
+        # 컴퓨터 이미지 - off 버전
+        self.secroom_computer_off_path = os.path.join(self.script_directory,
+            "../image/InformationSecurityRoom/InformationSecurityRoom_ComputerOff.png")
+        
+        # 출구 문 이미지
+        self.secroom_door_path = os.path.join(self.script_directory,
+            "../image/InformationSecurityRoom/InformationSecurityRoom_Door.png")
+        
+        # 파워 전력 공급기 이미지
+        self.secroom_power_supply_path = os.path.join(self.script_directory,
+            "../image/InformationSecurityRoom/InformationSecurityRoom_PowerSupply.png")
+    
 
         # 게임 이미지 불러오기
-        self.secroom_background = pygame.image.load(self.secroom_background_path)
+
+        # 배경 - off 버전
+        self.secroom_background_off = pygame.image.load(self.secroom_background_off_path)
+
+        # 컴퓨터 이미지 - off 버전
+        self.secroom_computer_off = pygame.image.load(self.secroom_computer_off_path)
+
+        # 출구 문 이미지
+        self.secroom_door = pygame.image.load(self.secroom_door_path)
+
+        # 파워 전력 공급기 이미지
+        self.secroom_power_supply = pygame.image.load(self.secroom_power_supply_path)
+        
 
         # 게임 이미지 크기 구하기 및 위치 정하기
-        self.secroom_background_rect = self.secroom_background.get_rect()
-        self.secroom_background_rect.center = (self.screen_width // 2, self.screen_height // 2)
+
+        # 배경 - off 버전
+        self.secroom_background_off_rect = self.secroom_background_off.get_rect()
+        self.secroom_background_off_rect.center = (self.screen_width // 2, self.screen_height // 2)
+
+        # 컴퓨터 이미지 - off 버전
+        self.secroom_computer_off_rect = self.secroom_computer_off.get_rect()
+        self.secroom_computer_off_rect.topleft = (387, 326)
+
+        # 출구 문 이미지
+        self.secroom_door_rect = self.secroom_door.get_rect()
+        self.secroom_door_rect.topleft = (1205, 150)
+
+        # 파워 전력 공급기 이미지
+        self.secroom_power_supply_rect = self.secroom_power_supply.get_rect()
+        self.secroom_power_supply_rect.topleft = (813, 195)
 
     # 상호작용 및 다양한 게임 이벤트 함수
     def handle_event(self, event):
@@ -54,7 +100,8 @@ class SecurityroomState:
                 # 이건 건드릴 필요 없음
                 pass
             else:
-                pass
+                if self.secroom_background_off_rect.collidepoint(event.pos):
+                    self.secroom_computer_off_flag = True
         
         # 키보드 이벤트 처리
         if event.type == pygame.KEYDOWN:  
@@ -112,4 +159,7 @@ class SecurityroomState:
         self.screen.blit(text_surface, text_rect)
 
     def draw(self, screen, event):
-        screen.blit(self.secroom_background, self.secroom_background_rect)
+        screen.blit(self.secroom_background_off, self.secroom_background_off_rect)
+        screen.blit(self.secroom_computer_off, self.secroom_computer_off_rect)
+        screen.blit(self.secroom_door, self.secroom_door_rect)
+        screen.blit(self.secroom_power_supply, self.secroom_power_supply_rect)
