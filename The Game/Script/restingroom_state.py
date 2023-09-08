@@ -40,21 +40,21 @@ class RestingroomState:
         self.RestingRoom_background_path = os.path.join(self.script_directory,
          "../image/RestingRoom/RestingRoom_background.png")
         self.RestingRoom_book_path = os.path.join(self.script_directory,
-         "../image/restingroom/RestingRoom_Book.png")
+         "../image/RestingRoom/RestingRoom_Book.png")
         self.RestingRoom_door_path = os.path.join(self.script_directory,
-         "../image/restingroom/RestingRoom_Door.png")
+         "../image/RestingRoom/RestingRoom_Door.png")
         self.RestingRoom_noplug_path = os.path.join(self.script_directory,
-         "../image/restingroom/RestingRoom_NoPlug.png")
+         "../image/RestingRoom/RestingRoom_NoPlug.png")
         self.RestingRoom_onplug_path = os.path.join(self.script_directory,
-         "../image/restingroom/RestingRoom_ONPlug.png")
+         "../image/RestingRoom/RestingRoom_ONPlug.png")
         self.RestingRoom_plant_path = os.path.join(self.script_directory,
-         "../image/restingroom/RestingRoom_Plant.png")
+         "../image/RestingRoom/RestingRoom_Plant.png")
         self.RestingRoom_plantnutrients_path = os.path.join(self.script_directory,
-         "../image/restingroom/RestingRoom_plant nutrients.png")
+         "../image/RestingRoom/RestingRoom_plant nutrients.png")
         self.RestingRoom_tablitoff_path = os.path.join(self.script_directory,
-         "../image/restingroom/RestingRoom_TablitOff.png")
+         "../image/RestingRoom/RestingRoom_TablitOff.png")
         self.RestingRoom_tabliton_path = os.path.join(self.script_directory,
-         "../image/restingroom/RestingRoom_TablitOn.png")
+         "../image/RestingRoom/RestingRoom_TablitOn.png")
 
         # 게임 이미지 불러오기
         self.RestingRoom_background = pygame.image.load(self.RestingRoom_background_path)
