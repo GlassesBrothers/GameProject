@@ -93,6 +93,7 @@ class RestingroomState:
         self.RestingRoom_plantnutrients_rect.center = (600,600)
         self.RestingRoom_tablitoff_rect.center = (1000,30)
         self.RestingRoom_tabliton_rect.center = (1000,600)
+
         
 
     # 상호작용 및 다양한 게임 이벤트 함수
