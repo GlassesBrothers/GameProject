@@ -72,6 +72,7 @@ class RestingroomState:
         self.RestingRoom_book_rect = self.RestingRoom_book.get_rect()
         self.RestingRoom_door_rect = self.RestingRoom_door.get_rect()
         self.RestingRoom_noplug_rect = self.RestingRoom_noplug.get_rect()
+        self.RestingRoom_onplug_rect = self.RestingRoom_onplug.get_rect()
         self.RestingRoom_plant_rect = self.RestingRoom_plant.get_rect()
         self.RestingRoom_plantnutrients_rect = self.RestingRoom_plantnutrients.get_rect()
         self.RestingRoom_tablitoff_rect = self.RestingRoom_tablitoff.get_rect()
@@ -87,13 +88,14 @@ class RestingroomState:
         # 이러면 딱 가운데에 맞춰지겠지.
         self.RestingRoom_background_rect.center = (self.screen_width // 2, self.screen_height // 2)
         self.RestingRoom_book_rect.center = (80,80)
-        self.RestingRoom_door_rect.center = (200,800)
+        self.RestingRoom_door_rect.topright = (self.screen_width, self.screen_height//5)
         self.RestingRoom_noplug_rect.center = (200,50)
         self.RestingRoom_plant_rect.center = (400,100)
         self.RestingRoom_plantnutrients_rect.center = (600,600)
         self.RestingRoom_tablitoff_rect.center = (1000,30)
         self.RestingRoom_tabliton_rect.center = (1000,600)
 
+    # def Book(self):
         
 
     # 상호작용 및 다양한 게임 이벤트 함수
@@ -181,3 +183,11 @@ class RestingroomState:
     # 이 함수는 위에서 네가 설정한 이미지를 화면에 그려주는 함수야.
     def draw(self, screen, event):
         screen.blit(self.RestingRoom_background, self.RestingRoom_background_rect)
+        screen.blit(self.RestingRoom_book, self.RestingRoom_book_rect)
+        screen.blit(self.RestingRoom_door, self.RestingRoom_door_rect)
+        screen.blit(self.RestingRoom_noplug, self.RestingRoom_noplug_rect)
+        screen.blit(self.RestingRoom_plant, self.RestingRoom_plant_rect)
+        screen.blit(self.RestingRoom_plantnutrients, self.RestingRoom_plantnutrients_rect)
+        screen.blit(self.RestingRoom_tablitoff, self.RestingRoom_tablitoff_rect)
+        screen.blit(self.RestingRoom_tabliton, self.RestingRoom_tabliton_rect)
+        screen.blit(self.RestingRoom_onplug, self.RestingRoom_onplug_rect)
