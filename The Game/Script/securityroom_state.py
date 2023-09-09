@@ -86,6 +86,10 @@ class SecurityroomState:
         # 파워 전력 공급기 이미지
         self.secroom_power_supply_path = os.path.join(self.script_directory,
             "../image/InformationSecurityRoom/InformationSecurityRoom_PowerSupply.png")
+        
+        # 컴퓨터 배경 이미지
+        self.secroom_computer_background_path = os.path.join(self.script_directory,
+            "../image/Other/secroom_computer_backgoround.png")
     
 
         # 게임 이미지 불러오기
@@ -101,6 +105,9 @@ class SecurityroomState:
 
         # 파워 전력 공급기 이미지
         self.secroom_power_supply = pygame.image.load(self.secroom_power_supply_path)
+
+        # 컴퓨터 배경 이미지
+        self.secroom_computer_background = pygame.image.load(self.secroom_computer_background_path)
         
 
         # 게임 이미지 크기 구하기 및 위치 정하기
@@ -121,6 +128,10 @@ class SecurityroomState:
         self.secroom_power_supply_rect = self.secroom_power_supply.get_rect()
         self.secroom_power_supply_rect.topleft = (813, 195)
 
+        # 컴퓨터 배경 이미지
+        self.secroom_computer_background_rect = self.secroom_computer_background.get_rect()
+        self.secroom_computer_background_rect.center = (self.screen_width // 2, self.screen_height // 2)
+
     # 상호작용 및 다양한 게임 이벤트 함수
     def handle_event(self, event):
         if not self.power_flag:
@@ -132,11 +143,11 @@ class SecurityroomState:
             self.secroom_computer_path = os.path.join(self.script_directory,
                 "../image/InformationSecurityRoom/InformationSecurityRoom_ComputerOff.png")
         else:
-            # 배경 - off 버전
+            # 배경 - on 버전
             self.secroom_background_path = os.path.join(self.script_directory,
                 "../image/InformationSecurityRoom/InformationSecurityRoom_background_PowerOn.png")
             
-            # 컴퓨터 이미지 - off 버전
+            # 컴퓨터 이미지 - on 버전
             self.secroom_computer_path = os.path.join(self.script_directory,
                 "../image/InformationSecurityRoom/InformationSecurityRoom_ComputerOn.png")
                 
@@ -268,17 +279,24 @@ class SecurityroomState:
                 self.elapsed_time = pygame.time.get_ticks() - self.text_start_time
                 self.show_text_box("컴퓨터가 켜졌다.", self.elapsed_time)
             else:
-                pass
+                screen.blit(self.secroom_computer_background, self.secroom_computer_background_rect)
         
         # 전원 공급기 이미지 상호작용 이벤트
         elif self.secroom_power_supply_flag:
             # 전원 공급기 텍스트 이벤트
             if self.secroom_power_supply_text:
-                self.show_text = True
-                if self.text_start_time is None:
-                    self.text_start_time = pygame.time.get_ticks()
-                self.elapsed_time = pygame.time.get_ticks() - self.text_start_time
-                self.show_text_box("비상 전원 공급 장치. 지금은 꺼져 있다.", self.elapsed_time)
+                if not self.power_flag:
+                    self.show_text = True
+                    if self.text_start_time is None:
+                        self.text_start_time = pygame.time.get_ticks()
+                    self.elapsed_time = pygame.time.get_ticks() - self.text_start_time
+                    self.show_text_box("비상 전원 공급 장치. 지금은 꺼져 있다.", self.elapsed_time)
+                else:
+                    self.show_text = True
+                    if self.text_start_time is None:
+                        self.text_start_time = pygame.time.get_ticks()
+                    self.elapsed_time = pygame.time.get_ticks() - self.text_start_time
+                    self.show_text_box("비상 전원 공급 장치. 지금은 작동 중이다.", self.elapsed_time)
             else:
                 pygame.draw.rect(self.screen, (255, 255, 255), (483, 189, 300, 350), 5)
                 pygame.draw.rect(self.screen, (0, 0, 0), (488, 194, 290, 340))
