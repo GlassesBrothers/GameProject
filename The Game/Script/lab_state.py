@@ -206,7 +206,7 @@ class LabState:
                     self.inventory_items.append(self.lab_wire)
         if event.type == pygame.KEYDOWN:  # 키보드 이벤트 처리
             if event.key == pygame.K_e :
-                if self.inventory != "inventory" and not self.show_text:
+                if self.inventory != "inventory" and not self.show_text and not self.lab_computer_flag:
                     self.inventory = "inventory"
                 else:
                     self.inventory = None  # 인벤토리를 닫을 때는 원래 상태로 돌아가기
