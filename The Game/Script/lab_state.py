@@ -62,7 +62,7 @@ class LabState:
         self.one_time = True
         self.keydoor_flag = False
         self.keykard_flag = True
-        # lab_switch를 눌렀을 때 텍스트를 표시하는 플래그
+        # lab_switch를 눌렀을 때 텍스트를 표시하는 플래그s
         self.show_text = False
         self.noclick = False
         self.inventory_items = []

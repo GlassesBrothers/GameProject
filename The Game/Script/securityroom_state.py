@@ -12,6 +12,9 @@ class SecurityroomState:
         # 상대경로 만들기
         self.script_directory = os.path.dirname(os.path.abspath(__file__))
 
+        # 텍스트 시작 시간 변수
+        self.text_start_time = None
+
         # 텍스트 바가 있는지 없는지 나타냄(True -> o, False -> x)
         self.show_text = False
         
@@ -30,8 +33,14 @@ class SecurityroomState:
 
         # 상호작용 이벤트 작동 여부
         
-        # 컴퓨터 상호작용 불 변수
-        self.secroom_computer_off_flag = False
+        # 컴퓨터 상호작용 글씨 불 변수
+        self.secroom_computer_off_text = False
+
+        # 파워 공급기 상호작용 글씨 불 변수
+        self.secroom_power_supply_text = False
+
+        # 파워 공급기 상호작용 글씨 불 변수
+        self.secroom_power_supply_text = False
 
         # 기본 색 설정
         self.black = (0, 0, 0)
@@ -100,8 +109,10 @@ class SecurityroomState:
                 # 이건 건드릴 필요 없음
                 pass
             else:
-                if self.secroom_background_off_rect.collidepoint(event.pos):
-                    self.secroom_computer_off_flag = True
+                if self.secroom_computer_off_rect.collidepoint(event.pos):
+                    self.secroom_computer_off_text = True
+                if self.secroom_power_supply_rect.collidepoint(event.pos):
+                    self.secroom_power_supply_text = True
         
         # 키보드 이벤트 처리
         if event.type == pygame.KEYDOWN:  
@@ -118,10 +129,14 @@ class SecurityroomState:
             
             # 만약 키보드의 z를 눌렀을 때 그리고 Z를 누를 수 있을 때 판단
             elif event.key == pygame.K_z and not self.noZ:
+                # 텍스트 출력 시간 초기화
+                self.text_start_time = None
                 # 출력을 중단하게 False로 바꾸고
                 self.show_text = False
                 # 클릭할 수 있게 False로 설정
                 self.noclick = False
+                # 컴퓨터 이미지 불 함수 False로 설정
+                self.secroom_computer_off_text = False
     
     def show_text_box(self, text, elapsed_time):
         # 출력 변수를 true로 설정하고 클릭할 수 없게 True로 설정
@@ -163,3 +178,11 @@ class SecurityroomState:
         screen.blit(self.secroom_computer_off, self.secroom_computer_off_rect)
         screen.blit(self.secroom_door, self.secroom_door_rect)
         screen.blit(self.secroom_power_supply, self.secroom_power_supply_rect)
+
+        # 컴퓨터 이미지 - off 버전 텍스트 출력
+        if self.secroom_computer_off_text:
+            self.show_text = True
+            if self.text_start_time is None:
+                self.text_start_time = pygame.time.get_ticks()
+            self.elapsed_time = pygame.time.get_ticks() - self.text_start_time
+            self.show_text_box("컴퓨터 전원이 켜지지 않는다.", self.elapsed_time)
