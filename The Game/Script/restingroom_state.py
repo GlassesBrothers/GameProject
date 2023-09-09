@@ -205,13 +205,13 @@ class RestingroomState:
                     self.text_start_time = None
                     self.show_restingroom_book_text = False
 
-                elif not self.restingroom_plug_flag:
+                if not self.restingroom_plug_flag:
                     self.show_text = False
                     self.noclick = False
                     self.text_start_time = None
                     self.show_restingroom_plug_text = False
 
-                elif not self.show_restingroom_plantnutrients_text:
+                if not self.show_restingroom_plantnutrients_text:
                     self.show_text = False
                     self.noclick = False
                     self.text_start_time = None
