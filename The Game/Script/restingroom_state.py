@@ -87,13 +87,14 @@ class RestingroomState:
         # 아래 코드는 이미지의 크기의 중심을 기점으로 화면 가로, 세로의 절반 좌표를 설정했어.
         # 이러면 딱 가운데에 맞춰지겠지.
         self.RestingRoom_background_rect.center = (self.screen_width // 2, self.screen_height // 2)
-        self.RestingRoom_book_rect.center = (80,80)
-        self.RestingRoom_door_rect.topright = (self.screen_width, self.screen_height//5)
-        self.RestingRoom_noplug_rect.center = (200,50)
-        self.RestingRoom_plant_rect.center = (400,100)
-        self.RestingRoom_plantnutrients_rect.center = (600,600)
-        self.RestingRoom_tablitoff_rect.center = (1000,30)
-        self.RestingRoom_tabliton_rect.center = (1000,600)
+        self.RestingRoom_book_rect.center = (130, 268)
+        self.RestingRoom_door_rect.topright = (self.screen_width+15, self.screen_height//5+15)
+        self.RestingRoom_noplug_rect.center = (967, 540)
+        self.RestingRoom_onplug_rect.center = (967, 540)
+        self.RestingRoom_plant_rect.center = (358,488)
+        self.RestingRoom_plantnutrients_rect.center = (316, 524)
+        self.RestingRoom_tablitoff_rect.center = (593,467)
+        self.RestingRoom_tabliton_rect.center = (593,467)
 
     # def Book(self):
         
@@ -103,6 +104,7 @@ class RestingroomState:
         # 파이게임 안에 마우스가 눌러졌을 때의 이벤트가 참인지 거짓인지 판단
         if event.type == pygame.MOUSEBUTTONDOWN:
             print(pygame.mouse.get_pos())
+            
             # 인벤토리가 켜져 있을 때 또는 클릭 불가가 켜져 있다면 상호작용이 안 되게 판단
             if self.inventory == "inventory" or self.noclick:
                 # 이건 건드릴 필요 없음
