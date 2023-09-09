@@ -449,8 +449,6 @@ class LabState:
                         self.folder3_flag = False
                         self.computer_Lock_flag = False
                 if self.computer_Lock_flag:
-                    pygame.draw.rect(self.screen, (0, 0, 0), (483, 189, 300, 350), 5)
-                    pygame.draw.rect(self.screen, (255, 255, 255), (488, 194, 290, 340))
                     pygame.draw.rect(screen, (255, 0, 0), (759, 194, 20, 20))
                     if event.type == pygame.MOUSEBUTTONDOWN:
                         if pygame.Rect(759, 194, 20, 20).collidepoint(event.pos):  # X 표시를 눌렀는지 확인

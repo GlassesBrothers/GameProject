@@ -49,6 +49,11 @@ class SecurityroomState:
         # 파워 공급기 상호작용 글씨 불 변수
         self.secroom_power_supply_text = False
 
+        # 컴퓨터 폴더 상호작용 불 변수
+        self.secroom_folder_flag = False
+
+        # 컴퓨터 폴더 상호작용 글씨 불 변수
+        self.secroom_folder_text = False
         # 파워 공급기 on/off 버튼 설정
         self.button1_rect = pygame.Rect(535, 220, 200, 150)  # 첫 번째 버튼 위치와 크기
         self.button2_rect = pygame.Rect(535, 370, 200, 150)  # 두 번째 버튼 위치와 크기
@@ -90,6 +95,15 @@ class SecurityroomState:
         # 컴퓨터 배경 이미지
         self.secroom_computer_background_path = os.path.join(self.script_directory,
             "../image/Other/secroom_computer_backgoround.png")
+
+        # 컴퓨터 폴더 이미지        
+        self.secroom_folder_path = os.path.join(self.script_directory, 
+            "../image/Other/secroom_folder.png")
+
+        # 컴퓨터 스레기통 폴더 이미지
+        self.trashcan_path = os.path.join(self.script_directory,
+            "../image/Other/trashcan.png")
+
     
 
         # 게임 이미지 불러오기
@@ -109,6 +123,11 @@ class SecurityroomState:
         # 컴퓨터 배경 이미지
         self.secroom_computer_background = pygame.image.load(self.secroom_computer_background_path)
         
+        # 컴퓨터 폴더 이미지
+        self.secroom_folder = pygame.image.load(self.secroom_folder_path)
+
+        # 컴퓨터 스레기통 폴더 이미지
+        self.trashcan = pygame.image.load(self.trashcan_path)
 
         # 게임 이미지 크기 구하기 및 위치 정하기
 
@@ -131,6 +150,12 @@ class SecurityroomState:
         # 컴퓨터 배경 이미지
         self.secroom_computer_background_rect = self.secroom_computer_background.get_rect()
         self.secroom_computer_background_rect.center = (self.screen_width // 2, self.screen_height // 2)
+
+        # 컴퓨터 폴더 이미지
+        self.secroom_folder_rect = self.secroom_folder.get_rect()
+        
+        # 컴퓨터 스레기통 폴더 이미지
+        self.trashcan_rect = self.trashcan.get_rect()
 
     # 상호작용 및 다양한 게임 이벤트 함수
     def handle_event(self, event):
@@ -210,6 +235,12 @@ class SecurityroomState:
                     # 출력을 중단하게 False로 바꾸고
                     self.show_text = False
                     self.secroom_computer_on_text = False
+                elif self.secroom_folder_text:
+                    # 텍스트 출력 시간 초기화
+                    self.text_start_time = None
+                    # 출력을 중단하게 False로 바꾸고
+                    self.show_text = False
+                    self.secroom_folder_text = False
                 else:
                     # 텍스트 출력 시간 초기화
                     self.text_start_time = None
@@ -221,6 +252,7 @@ class SecurityroomState:
                     self.secroom_computer_off_text = False
                     self.secroom_computer_on_flag = False
                     self.secroom_power_supply_flag = False
+                    
     
     def show_text_box(self, text, elapsed_time):
         # 출력 변수를 true로 설정하고 클릭할 수 없게 True로 설정
@@ -280,6 +312,57 @@ class SecurityroomState:
                 self.show_text_box("컴퓨터가 켜졌다.", self.elapsed_time)
             else:
                 screen.blit(self.secroom_computer_background, self.secroom_computer_background_rect)
+                pygame.draw.rect(screen, (255, 0, 0), (1020, 60, 20, 20))
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                        if pygame.Rect(1020, 60, 20, 20).collidepoint(event.pos):  # X 표시를 눌렀는지 확인
+                            self.secroom_computer_on_flag = False
+                            self.noclick = False
+                self.secroom_folder_rect.topleft = (264, 72)
+                screen.blit(self.secroom_folder, self.secroom_folder_rect)
+                # 폴더 아래에 표시할 텍스트
+                folder_text = "중요한 문서"
+
+                # 폴더 아래에 텍스트를 그리기 위한 폰트 설정
+                font = pygame.font.SysFont("malgungothic", 20, True)
+                text_surface = font.render(folder_text, True, (0, 0, 0))
+
+                # 텍스트를 그릴 위치 설정 (이 예제에서는 폴더 이미지 아래 중앙에 위치하도록 설정)
+                text_rect = text_surface.get_rect()
+                text_rect.midtop = (self.secroom_folder_rect.centerx - 5, self.secroom_folder_rect.bottom)
+
+                # 이미지에 텍스트를 그림
+                screen.blit(text_surface, text_rect)
+
+                self.trashcan_rect.topleft = (264, 192)
+                screen.blit(self.trashcan, self.trashcan_rect)
+
+                # 폴더 아래에 표시할 텍스트
+                folder_text = "쓰레기통"
+
+                # 폴더 아래에 텍스트를 그리기 위한 폰트 설정
+                font = pygame.font.SysFont("malgungothic", 20, True)
+                text_surface = font.render(folder_text, True, (0, 0, 0))
+
+                # 텍스트를 그릴 위치 설정 (이 예제에서는 폴더 이미지 아래 중앙에 위치하도록 설정)
+                text_rect = text_surface.get_rect()
+                text_rect.midtop = (self.trashcan_rect.centerx - 4, self.trashcan_rect.bottom)
+
+                # 이미지에 텍스트를 그림
+                screen.blit(text_surface, text_rect)
+
+                # 폴더 클릭 상호작용 이벤트
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if self.secroom_folder_rect.collidepoint(event.pos):
+                        self.secroom_folder_text = True
+                    if self.trashcan_rect.collidepoint(event.pos):
+                        self.trashcan_flag = True
+
+                if self.secroom_folder_text:
+                    self.show_text = True
+                    if self.text_start_time is None:
+                        self.text_start_time = pygame.time.get_ticks()
+                    self.elapsed_time = pygame.time.get_ticks() - self.text_start_time
+                    self.show_text_box("폴더가 잠겨 있어 열리지 않는다.", self.elapsed_time)
         
         # 전원 공급기 이미지 상호작용 이벤트
         elif self.secroom_power_supply_flag:

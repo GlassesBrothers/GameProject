@@ -12,6 +12,11 @@ class RestingroomState:
         # 상대경로 만들기
         self.script_directory = os.path.dirname(os.path.abspath(__file__))
 
+        self.restingroom_book_flag = False
+        self.restingroom_plug_flag = False
+        self.restingRoom_plantnutrients_flag = False
+        self.restingroom_tablit_flag = False
+
         # 텍스트 바가 있는지 없는지 나타냄(True -> o, False -> x)
         self.show_text = False
         
@@ -72,6 +77,7 @@ class RestingroomState:
         self.RestingRoom_book_rect = self.RestingRoom_book.get_rect()
         self.RestingRoom_door_rect = self.RestingRoom_door.get_rect()
         self.RestingRoom_noplug_rect = self.RestingRoom_noplug.get_rect()
+        self.RestingRoom_onplug_rect = self.RestingRoom_onplug.get_rect()
         self.RestingRoom_plant_rect = self.RestingRoom_plant.get_rect()
         self.RestingRoom_plantnutrients_rect = self.RestingRoom_plantnutrients.get_rect()
         self.RestingRoom_tablitoff_rect = self.RestingRoom_tablitoff.get_rect()
@@ -86,13 +92,14 @@ class RestingroomState:
         # 아래 코드는 이미지의 크기의 중심을 기점으로 화면 가로, 세로의 절반 좌표를 설정했어.
         # 이러면 딱 가운데에 맞춰지겠지.
         self.RestingRoom_background_rect.center = (self.screen_width // 2, self.screen_height // 2)
-        self.RestingRoom_book_rect.center = (80,80)
-        self.RestingRoom_door_rect.center = (200,800)
-        self.RestingRoom_noplug_rect.center = (200,50)
-        self.RestingRoom_plant_rect.center = (400,100)
-        self.RestingRoom_plantnutrients_rect.center = (600,600)
-        self.RestingRoom_tablitoff_rect.center = (1000,30)
-        self.RestingRoom_tabliton_rect.center = (1000,600)
+        self.RestingRoom_book_rect.center = (130, 268)
+        self.RestingRoom_door_rect.topright = (self.screen_width+15, self.screen_height//5+15)
+        self.RestingRoom_noplug_rect.center = (967, 540)
+        self.RestingRoom_onplug_rect.center = (967, 540)
+        self.RestingRoom_plant_rect.center = (358,488)
+        self.RestingRoom_plantnutrients_rect.center = (316, 524)
+        self.RestingRoom_tablitoff_rect.center = (593,467)
+        self.RestingRoom_tabliton_rect.center = (593,467)
 
         
 
@@ -101,6 +108,7 @@ class RestingroomState:
         # 파이게임 안에 마우스가 눌러졌을 때의 이벤트가 참인지 거짓인지 판단
         if event.type == pygame.MOUSEBUTTONDOWN:
             print(pygame.mouse.get_pos())
+            
             # 인벤토리가 켜져 있을 때 또는 클릭 불가가 켜져 있다면 상호작용이 안 되게 판단
             if self.inventory == "inventory" or self.noclick:
                 # 이건 건드릴 필요 없음
@@ -111,12 +119,17 @@ class RestingroomState:
                 # 상호작용은 무조건 _rect가 들어가야 해.
                 # collidepoint는 (event.pos -> 마우스 클릭했을 때의 위치) 감지하는 거야.
                 # 이미지 크기 안에서 있는지 없는지 True or False로 나오지.
-                if self.RestingRoom_background_rect.collidepoint(event.pos):
-                    # 만약 True면?
-                    print('정다우 바보')
-                else:
-                    # 만약 False면?
-                    print('정다우 멍청이')
+                if self.RestingRoom_book_rect.collidepoint(event.pos):
+                    self.restingroom_book_flag = True
+                    self.inventory_items.append(self.RestingRoom_book)
+                elif self.RestingRoom_onplug_rect.collidepoint(event.pos):
+                    self.RestingRoom_plug_flag = not self.restingroom_book_flag
+
+                elif self.RestingRoom_plantnutrients_rect.collidepoint(event.pos):
+                    self.restingRoom_plantnutrients_flag_flag = not self.restingroom_book_flag
+                #클릭시 아이템 사라짐 (인벤에 반영하는거 추가해야함)
+                elif self. RestingRoom_door_rect.collidedict(event.pos):
+                    self.game_state = "hollway"
         
         # 키보드 이벤트 처리
         if event.type == pygame.KEYDOWN:  
@@ -177,7 +190,34 @@ class RestingroomState:
 
         # 화면에 글씨를 그리는 작업
         self.screen.blit(text_surface, text_rect)
-
+    
+    
     # 이 함수는 위에서 네가 설정한 이미지를 화면에 그려주는 함수야.
     def draw(self, screen, event):
+        # 배경 이미지 그리기
         screen.blit(self.RestingRoom_background, self.RestingRoom_background_rect)
+
+        # 책 이미지 그리기
+        if not self.restingroom_book_flag:
+            screen.blit(self.RestingRoom_book, self.RestingRoom_book_rect)
+        
+        # 출구 문 그리기
+        screen.blit(self.RestingRoom_door, self.RestingRoom_door_rect)
+        
+        # 플러그 - off 버전 이미지 그리기
+        screen.blit(self.RestingRoom_noplug, self.RestingRoom_noplug_rect)
+        
+        # 식물 이미지 그리기
+        screen.blit(self.RestingRoom_plant, self.RestingRoom_plant_rect)
+        
+        # 식물 영양제 그리기
+        screen.blit(self.RestingRoom_plantnutrients, self.RestingRoom_plantnutrients_rect)
+        
+        # 테블릿 - off 버전 그리기
+        screen.blit(self.RestingRoom_tablitoff, self.RestingRoom_tablitoff_rect)
+        
+        # 테블릿 - on 버전 그리기
+        screen.blit(self.RestingRoom_tabliton, self.RestingRoom_tabliton_rect)
+        
+        # 플러그 - on 버전 이미지 그리기
+        screen.blit(self.RestingRoom_onplug, self.RestingRoom_onplug_rect)
