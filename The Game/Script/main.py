@@ -137,12 +137,12 @@ while running:
             #storage_state.handle_event(event)
         elif game_state == "restingroom":
             hollway_state.game_state = "hollway"
-            inventory = securityroom_state.inventory
-            new_items = securityroom_state.inventory_items
+            inventory = restingroom_state.inventory
+            new_items = restingroom_state.inventory_items
             for item in new_items:
                 if item not in inventory_items:
                     inventory_items.append(item)
-            securityroom_state.handle_event(event)
+            restingroom_state.handle_event(event)
         elif game_state == "securityroom":
             hollway_state.game_state = "hollway"
             inventory = securityroom_state.inventory
@@ -214,8 +214,19 @@ while running:
             lab_state.inventory_equipped_item = "lab_wire"
         elif equipped_item == lab_state.lab_switch:
             lab_state.inventory_equipped_item = "lab_switch"
+
+
+
         elif equipped_item == lab_state.keyCard:
+
             lab_state.inventory_equipped_item = "keykard"
+
+
+
+        elif equipped_item == restingroom_state.RestingRoom_book:
+            restingroom_state.inventory_equipped_item = "book"
+            
+        
         # elif equipped_item == storage_state.storage_toolbox_screwdriver:
         #     storage_state.inventory_equipped_item = "storage_toolbox_screwdriver"
         # elif equipped_item == storage_state.restingroom_kitchen_key:
