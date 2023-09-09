@@ -36,8 +36,8 @@ class SecurityroomState:
         # 컴퓨터 상호작용 글씨 불 변수
         self.secroom_computer_off_text = False
 
-        # 파워 공급기 상호작용 글씨 불 변수
-        self.secroom_power_supply_text = False
+        # 파워 공급기 상호작용 불 변수
+        self.secroom_power_supply_flag = False
 
         # 파워 공급기 상호작용 글씨 불 변수
         self.secroom_power_supply_text = False
