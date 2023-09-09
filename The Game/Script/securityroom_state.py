@@ -52,6 +52,9 @@ class SecurityroomState:
         # 컴퓨터 폴더 상호작용 불 변수
         self.secroom_folder_flag = False
 
+        # 쓰레기통 상호작용 불 변수
+        self.trashcan_flag = False
+
         # 컴퓨터 폴더 상호작용 글씨 불 변수
         self.secroom_folder_text = False
         # 파워 공급기 on/off 버튼 설정
@@ -104,7 +107,9 @@ class SecurityroomState:
         self.trashcan_path = os.path.join(self.script_directory,
             "../image/Other/trashcan.png")
 
-    
+        # 컴퓨터 텍스트 파일 이미지
+        self.secroom_txt_path = os.path.join(self.script_directory,
+            "../image/Other/secroom_txt.png")
 
         # 게임 이미지 불러오기
 
@@ -128,6 +133,9 @@ class SecurityroomState:
 
         # 컴퓨터 스레기통 폴더 이미지
         self.trashcan = pygame.image.load(self.trashcan_path)
+
+        # 컴퓨터 텍스트 파일 이미지
+        self.secroom_txt = pygame.image.load(self.secroom_txt_path)
 
         # 게임 이미지 크기 구하기 및 위치 정하기
 
@@ -156,6 +164,9 @@ class SecurityroomState:
         
         # 컴퓨터 스레기통 폴더 이미지
         self.trashcan_rect = self.trashcan.get_rect()
+
+        # 컴퓨터 텍스트 파일 이미지
+        self.secroom_txt_rect = self.secroom_txt.get_rect()
 
     # 상호작용 및 다양한 게임 이벤트 함수
     def handle_event(self, event):
@@ -352,9 +363,9 @@ class SecurityroomState:
 
                 # 폴더 클릭 상호작용 이벤트
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    if self.secroom_folder_rect.collidepoint(event.pos):
+                    if self.secroom_folder_rect.collidepoint(event.pos) and not self.trashcan_flag:
                         self.secroom_folder_text = True
-                    if self.trashcan_rect.collidepoint(event.pos):
+                    if self.trashcan_rect.collidepoint(event.pos) and not self.secroom_folder_text:
                         self.trashcan_flag = True
 
                 if self.secroom_folder_text:
@@ -363,6 +374,29 @@ class SecurityroomState:
                         self.text_start_time = pygame.time.get_ticks()
                     self.elapsed_time = pygame.time.get_ticks() - self.text_start_time
                     self.show_text_box("폴더가 잠겨 있어 열리지 않는다.", self.elapsed_time)
+                
+                elif self.trashcan_flag:
+                    pygame.draw.rect(self.screen, (0, 0, 0), (335, 260, 235, 145), 5)
+                    pygame.draw.rect(screen, (255, 255, 255), (340, 265, 225, 135))
+                    pygame.draw.rect(screen, (255, 0, 0), (545, 265, 20, 20))
+                    if pygame.Rect(545, 265, 20, 20).collidepoint(event.pos):
+                        self.trashcan_flag = False
+                    self.secroom_txt_rect.topleft = (405, 270)
+                    screen.blit(self.secroom_txt, self.secroom_txt_rect)
+
+                    # 폴더 아래에 표시할 텍스트
+                    folder_text = "폐기된 프로젝트"
+
+                    # 폴더 아래에 텍스트를 그리기 위한 폰트 설정
+                    font = pygame.font.SysFont("malgungothic", 20, True)
+                    text_surface = font.render(folder_text, True, (0, 0, 0))
+
+                    # 텍스트를 그릴 위치 설정 (이 예제에서는 폴더 이미지 아래 중앙에 위치하도록 설정)
+                    text_rect = text_surface.get_rect()
+                    text_rect.midtop = (self.secroom_txt_rect.centerx - 4, self.secroom_txt_rect.bottom)
+
+                    # 이미지에 텍스트를 그림
+                    screen.blit(text_surface, text_rect)
         
         # 전원 공급기 이미지 상호작용 이벤트
         elif self.secroom_power_supply_flag:
