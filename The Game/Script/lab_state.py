@@ -70,7 +70,7 @@ class LabState:
 
 
         # 다른 상호작용 요소에 대한 초기화 코드 작성
-        self.keyCard_path = os.path.join(self.script_directory, "../image/lab/lab_keyCard.png")
+        self.keyCard_path = os.path.join(self.script_directory, "../image/Lab/Lab_KeyCard.png")
         self.keyCard = pygame.image.load(self.keyCard_path)
         
         
