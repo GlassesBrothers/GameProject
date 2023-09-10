@@ -1,6 +1,5 @@
 import pygame
 import os
-import time
 
 class RestingroomState:
     def __init__(self, screen_width, screen_height, screen, inventory_equipped_item):
@@ -32,6 +31,12 @@ class RestingroomState:
         # 현재 장착된 아이템을 저장하는 변수
         self.equipped_item = None  
 
+        # 드래그 변수
+        self.dragging = False
+        self.coordinates_y = 0
+        self.coordinates_x = self.screen_width // 2
+        self.tablittext_y = 0
+
         # 기본 색 설정
         self.black = (0, 0, 0)
         self.white = (255, 255, 255)
@@ -55,6 +60,11 @@ class RestingroomState:
         self.rest_key_flag = False
         self.rest_key_text = False
 
+        # 태블릿 상호작용 및 택스트 불 함수
+        self.rest_tablit_flag = False
+        self.rest_tablit_text = False
+        self.rest_tablit_screen = False
+
         # 게임 이미지 경로 설정
         self.RestingRoom_background_path = os.path.join(self.script_directory,
             "../image/RestingRoom/RestingRoom_background.png")
@@ -68,10 +78,12 @@ class RestingroomState:
             "../image/RestingRoom/RestingRoom_Plant.png")
         self.RestingRoom_plantnutrients_path = os.path.join(self.script_directory,
             "../image/RestingRoom/RestingRoom_plant nutrients.png")
-        self.RestingRoom_tablitoff_path = os.path.join(self.script_directory,
-            "../image/RestingRoom/RestingRoom_TablitOff.png")
         self.RestingRoom_tabliton_path = os.path.join(self.script_directory,
             "../image/RestingRoom/RestingRoom_TablitOn.png")
+        self.Other_tablitbackground_path = os.path.join(self.script_directory,
+            "../image/Other/tablit_background.png")
+        self.Other_tablittext_path = os.path.join(self.script_directory,
+            "../image/Other/tablit_text.png")
         self.Inventory_book_path = os.path.join(self.script_directory,
             "../image/InventoryItems/Inventory_Book.png")
         self.Inventory_Plug_path = os.path.join(self.script_directory,
@@ -87,6 +99,8 @@ class RestingroomState:
         self.RestingRoom_plant = pygame.image.load(self.RestingRoom_plant_path)
         self.RestingRoom_plantnutrients = pygame.image.load(self.RestingRoom_plantnutrients_path)
         self.RestingRoom_tabliton = pygame.image.load(self.RestingRoom_tabliton_path)
+        self.Other_tablitbackground = pygame.image.load(self.Other_tablitbackground_path)
+        self.Other_tablittext = pygame.image.load(self.Other_tablittext_path)
 
         self.Inventory_book = pygame.image.load(self.Inventory_book_path)
         self.Inventory_Plug = pygame.image.load(self.Inventory_Plug_path)
@@ -109,6 +123,10 @@ class RestingroomState:
         
         self.RestingRoom_tabliton_rect = self.RestingRoom_tabliton.get_rect()
 
+        self.Other_tablitbackground_rect = self.Other_tablitbackground.get_rect()
+
+        self.Other_tablittext_rect = self.Other_tablittext.get_rect()
+
         self.RestingRoom_background_rect.center = (self.screen_width // 2, self.screen_height // 2)
         self.RestingRoom_book_rect.center = (130, 268)
 
@@ -120,6 +138,9 @@ class RestingroomState:
         self.RestingRoom_plantnutrients_rect.center = (316, 524)
 
         self.RestingRoom_tabliton_rect.center = (593,467)
+
+        self.Other_tablitbackground_rect.center = (self.screen_width // 2, self.screen_height // 2)
+        self.Other_tablittext_rect.center = (self.screen_width // 2, 300)
 
         
 
@@ -152,11 +173,30 @@ class RestingroomState:
                     self.rest_key_text = True
                     self.inventory_items.append(self.Inventory_Key)
 
-                if self.RestingRoom_tabliton_rect.collidepoint(event.pos):
-                    print('테블릿이다.')
-
                 if self.RestingRoom_door_rect.collidepoint(event.pos):
                             self.game_state = "hollway"
+
+                if self.RestingRoom_tabliton_rect.collidepoint(event.pos):
+                    if self.rest_tablit_flag == False:
+                        self.rest_tablit_text = True
+                    self.rest_tablit_flag = True
+                    if self.rest_tablit_flag == True:
+                        self.rest_tablit_screen = True
+                
+                if self.Other_tablitbackground_rect.collidepoint(event.pos):
+                    self.dragging = True
+                if self.Other_tablittext_rect.collidepoint(event.pos):
+                    self.dragging = True
+
+
+        if event.type == pygame.MOUSEBUTTONUP:
+            self.dragging = False
+
+        if event.type == pygame.MOUSEMOTION:
+            if self.dragging:
+                print('5')
+                self.coordinates_x,  self.coordinates_y  =  event.pos
+                self.tablittext_y = 720 - self.coordinates_y
 
         
         # 키보드 이벤트 처리
@@ -185,6 +225,8 @@ class RestingroomState:
                 self.rest_plug_text = False
                 self.rest_plant_text = False
                 self.rest_key_text = False
+                self.rest_tablit_text = False
+                self.rest_tablit_screen = False
     
     # 텍스트 박스를 보여주는 함수
     # 여긴 건드릴 필요없어.
@@ -230,8 +272,6 @@ class RestingroomState:
     def draw(self, screen, event):
         screen.blit(self.RestingRoom_background, self.RestingRoom_background_rect)
         screen.blit(self.RestingRoom_plant, self.RestingRoom_plant_rect)
-        
-        screen.blit(self.RestingRoom_tabliton, self.RestingRoom_tabliton_rect)
 
         if self.rest_plug_flag:
             if self.rest_plug_text:
@@ -269,3 +309,20 @@ class RestingroomState:
                 self.show_text_box("영양제인 줄 알았지만 금고 키였다.", self.elapsed_time)
         else:
             screen.blit(self.RestingRoom_plantnutrients, self.RestingRoom_plantnutrients_rect)
+        
+        if self.rest_tablit_flag:
+            screen.blit(self.RestingRoom_tabliton, self.RestingRoom_tabliton_rect)# 이미지 띄우기
+
+            if self.rest_tablit_text:# '전원을 켰다' 택스트 띄우기
+                self.show_text = True
+                if self.text_start_time is None:
+                    self.text_start_time = pygame.time.get_ticks()
+                self.elapsed_time = pygame.time.get_ticks() - self.text_start_time
+                self.show_text_box("태블릿의 전원을 켰다.", self.elapsed_time)
+
+            elif self.rest_tablit_screen:
+                screen.blit(self.Other_tablitbackground, self.Other_tablitbackground_rect)# 이미지 띄우기
+                screen.blit(self.Other_tablittext, self.Other_tablittext_rect)# 이미지 띄우기
+                self.Other_tablittext_rect.center = (self.screen_width // 2, 720 - self.tablittext_y)
+                
+
