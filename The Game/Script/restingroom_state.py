@@ -283,6 +283,26 @@ class RestingroomState:
         elif not self.rest_plug_flag:
             screen.blit(self.RestingRoom_onplug, self.RestingRoom_onplug_rect)
 
+        if self.rest_plant_text:
+            self.show_text = True
+            if self.text_start_time is None:
+                self.text_start_time = pygame.time.get_ticks()
+            self.elapsed_time = pygame.time.get_ticks() - self.text_start_time
+            self.show_text_box("인조 식물이 심어져 있는 화분이다.", self.elapsed_time)
+
+
+        if self.rest_key_flag:
+            if self.rest_key_text:
+                self.show_text = True
+                if self.text_start_time is None:
+                    self.text_start_time = pygame.time.get_ticks()
+                self.elapsed_time = pygame.time.get_ticks() - self.text_start_time
+                self.show_text_box("영양제인 줄 알았지만 금고 키였다.", self.elapsed_time)
+        else:
+            screen.blit(self.RestingRoom_plantnutrients, self.RestingRoom_plantnutrients_rect)
+
+        
+
         if self.rest_book_flag:
             if self.rest_booK_text:
                 self.show_text = True
@@ -293,22 +313,9 @@ class RestingroomState:
         else:
             screen.blit(self.RestingRoom_book, self.RestingRoom_book_rect)
 
-        if self.rest_plant_text:
-            self.show_text = True
-            if self.text_start_time is None:
-                self.text_start_time = pygame.time.get_ticks()
-            self.elapsed_time = pygame.time.get_ticks() - self.text_start_time
-            self.show_text_box("인조 식물이 심어져 있는 화분이다.", self.elapsed_time)
         
-        if self.rest_key_flag:
-            if self.rest_key_text:
-                self.show_text = True
-                if self.text_start_time is None:
-                    self.text_start_time = pygame.time.get_ticks()
-                self.elapsed_time = pygame.time.get_ticks() - self.text_start_time
-                self.show_text_box("영양제인 줄 알았지만 금고 키였다.", self.elapsed_time)
-        else:
-            screen.blit(self.RestingRoom_plantnutrients, self.RestingRoom_plantnutrients_rect)
+        
+        
         
         if self.rest_tablit_flag:
             screen.blit(self.RestingRoom_tabliton, self.RestingRoom_tabliton_rect)# 이미지 띄우기
