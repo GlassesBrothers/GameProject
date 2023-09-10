@@ -11,6 +11,10 @@ class HollwayState:
         self.inventory_equipped_item = inventory_equipped_item
 
         self.script_directory = os.path.dirname(os.path.abspath(__file__))
+        
+        # 게임 사운드 불러오기
+        self.Door_audio_path = os.path.join(self.script_directory, '../audio/Door.mp3')
+        self.Door_audio = pygame.mixer.Sound(self.Door_audio_path)
 
         self.Hollway_background_path = os.path.join(self.script_directory, "../image/Hollway/Hollway_background.png")
         self.exitdoor_path = os.path.join(self.script_directory, "../image/Hollway/Hollway_Exit.png")
@@ -97,10 +101,12 @@ class HollwayState:
                         self.exitdoor_flag = True
                         self.exitdoor_text = True
                 elif self.labdoor_rect.collidepoint(event.pos):  # 이미지 위에서 클릭되었는지 확인
+                    self.Door_audio.play()
                     self.game_state = "lab"
                 elif self.retiringdoor_rect.collidepoint(event.pos):  # 이미지 위에서 클릭되었는지 확인
                     
                     if self.restingdoor_flag:
+                        self.Door_audio.play()
                         self.game_state = "restingroom"
                     else:
                         if self.inventory_equipped_item == "lab_wire":
@@ -117,6 +123,7 @@ class HollwayState:
                         self.retiringdoor_text = True
                     # self.game_state = "restingroom"
                 elif self.storagedoor_rect.collidepoint(event.pos):  # 이미지 위에서 클릭되었는지 확인
+                    self.Door_audio.play()
                     self.game_state = "storage"
                 elif self.seciritydoor_rect.collidepoint(event.pos):  # 이미지 위에서 클릭되었는지 확인
                     if self.inventory_equipped_item == "storage_keycard":
@@ -226,6 +233,7 @@ class HollwayState:
                     # 이미지에 텍스트를 그림
                     screen.blit(text_surface, text_rect)
                 else:
+                    self.Door_audio.play()
                     self.game_state = 'ending'
 
         if self.storagedoor_flag:
@@ -243,6 +251,7 @@ class HollwayState:
                 self.elapsed_time = pygame.time.get_ticks() - self.text_start_time
                 self.show_text_box("보안실 문이 열렸다.", self.elapsed_time)
             else:
+                self.Door_audio.play()
                 self.game_state = "securityroom"
                 self.seciritydoor_key_flag = False
         else:

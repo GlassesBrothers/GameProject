@@ -68,6 +68,11 @@ class LabState:
         self.inventory_items = []
         self.inventory = None
 
+        
+        # 게임 사운드 불러오기
+        self.Door_audio_path = os.path.join(self.script_directory, '../audio/Door.mp3')
+        self.Door_audio = pygame.mixer.Sound(self.Door_audio_path)
+
 
         # 다른 상호작용 요소에 대한 초기화 코드 작성
         self.keyCard_path = os.path.join(self.script_directory, "../image/Lab/Lab_KeyCard.png")
@@ -184,6 +189,7 @@ class LabState:
                     self.noclick = True
                 elif self.lab_door_rect.collidepoint(event.pos):
                     if self.lab_door_flag:
+                        self.Door_audio.play()
                         self.game_state = "hollway"
                     else:
                         self.show_lab_door_text = True

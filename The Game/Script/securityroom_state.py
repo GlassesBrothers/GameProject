@@ -82,6 +82,10 @@ class SecurityroomState:
         self.white = (255, 255, 255)
         self.gray = (200, 200, 200)
 
+        # 게임 사운드 불러오기
+        self.Door_audio_path = os.path.join(self.script_directory, '../audio/Door.mp3')
+        self.Door_audio = pygame.mixer.Sound(self.Door_audio_path)
+
         # 게임 이미지 경로 설정
         if not self.power_flag:
             # 배경 - off 버전
@@ -263,6 +267,7 @@ class SecurityroomState:
                     self.secroom_power_supply_flag = True
                     self.secroom_power_supply_text = True
                 if self.secroom_door_rect.collidepoint(event.pos):
+                    self.Door_audio.play()
                     self.game_state = "hollway"
 
         # 키보드 이벤트 처리

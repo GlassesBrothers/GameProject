@@ -65,6 +65,9 @@ class RestingroomState:
         self.rest_tablit_text = False
         self.rest_tablit_screen = False
 
+        # 게임 사운드 경로 설정
+        self.Door_audio_path = os.path.join(self.script_directory, '../audio/Door.mp3')
+
         # 게임 이미지 경로 설정
         self.RestingRoom_background_path = os.path.join(self.script_directory,
             "../image/RestingRoom/RestingRoom_background.png")
@@ -90,6 +93,9 @@ class RestingroomState:
             "../image/InventoryItems/Inventory_Plug.png")
         self.Inventory_Key_path = os.path.join(self.script_directory,
             "../image/InventoryItems/Inventory_Key.png")
+        
+        # 사운드 불러오기
+        self.Door_audio = pygame.mixer.Sound(self.Door_audio_path)
 
         # 게임 이미지 불러오기
         self.RestingRoom_background = pygame.image.load(self.RestingRoom_background_path)
@@ -174,6 +180,7 @@ class RestingroomState:
                     self.inventory_items.append(self.Inventory_Key)
 
                 if self.RestingRoom_door_rect.collidepoint(event.pos):
+                            self.Door_audio.play()
                             self.game_state = "hollway"
 
                 if self.RestingRoom_tabliton_rect.collidepoint(event.pos):
@@ -194,7 +201,6 @@ class RestingroomState:
 
         if event.type == pygame.MOUSEMOTION:
             if self.dragging:
-                print('5')
                 self.coordinates_x,  self.coordinates_y  =  event.pos
                 self.tablittext_y = 720 - self.coordinates_y
 
@@ -312,10 +318,6 @@ class RestingroomState:
                 self.show_text_box("'동력제어' 책을 흭득했다.", self.elapsed_time)
         else:
             screen.blit(self.RestingRoom_book, self.RestingRoom_book_rect)
-
-        
-        
-        
         
         if self.rest_tablit_flag:
             screen.blit(self.RestingRoom_tabliton, self.RestingRoom_tabliton_rect)# 이미지 띄우기

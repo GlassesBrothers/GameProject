@@ -12,6 +12,9 @@ class StorageState:
         
         self.script_directory = os.path.dirname(os.path.abspath(__file__))
         
+        # 게임 사운드 불러오기
+        self.Door_audio_path = os.path.join(self.script_directory, '../audio/Door.mp3')
+        self.Door_audio = pygame.mixer.Sound(self.Door_audio_path)
         
         self.storage_background_path = os.path.join(self.script_directory, "../image/storage/Storage_background.png")
         self.storage_battery_path = os.path.join(self.script_directory, "../image/storage/Storage_Battery.png")
@@ -124,6 +127,7 @@ class StorageState:
                     self.storage_toolbox_text = True
                     self.storage_toolbox_state = True
                 elif self.storage_door_rect.collidepoint(event.pos):
+                    self.Door_audio.play()
                     self.game_state = "hollway"
                     
                 elif self.storage_frame_rect.collidepoint(event.pos):
