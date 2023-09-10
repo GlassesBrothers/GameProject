@@ -151,8 +151,6 @@ while running:
                 if item not in inventory_items:
                     inventory_items.append(item)
             securityroom_state.handle_event(event)
-            game_state = restingroom_state.game_state
-
 
     screen.fill(white)
 
