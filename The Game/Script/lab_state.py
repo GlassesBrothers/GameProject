@@ -388,7 +388,6 @@ class LabState:
             pygame.display.flip()
         
         if self.inventory_equipped_item == "keykard" and self.keydoor_flag:
-                print('1')
                 self.show_text = True
                 if self.text_start_time is None:
                     self.text_start_time = pygame.time.get_ticks()

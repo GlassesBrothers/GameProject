@@ -7,7 +7,6 @@ import restingroom_state
 import securityroom_state
 #import storage_state
 
-
 black = (0, 0, 0)
 white = (255, 255, 255)
 gray = (200, 200, 200)
@@ -143,6 +142,7 @@ while running:
                 if item not in inventory_items:
                     inventory_items.append(item)
             restingroom_state.handle_event(event)
+            game_state = restingroom_state.game_state
         elif game_state == "securityroom":
             hollway_state.game_state = "hollway"
             inventory = securityroom_state.inventory
@@ -151,6 +151,8 @@ while running:
                 if item not in inventory_items:
                     inventory_items.append(item)
             securityroom_state.handle_event(event)
+            game_state = restingroom_state.game_state
+
 
     screen.fill(white)
 
@@ -214,15 +216,9 @@ while running:
             lab_state.inventory_equipped_item = "lab_wire"
         elif equipped_item == lab_state.lab_switch:
             lab_state.inventory_equipped_item = "lab_switch"
-
-
-
         elif equipped_item == lab_state.keyCard:
-
             lab_state.inventory_equipped_item = "keykard"
-
-
-
+            
         elif equipped_item == restingroom_state.RestingRoom_book:
             restingroom_state.inventory_equipped_item = "book"
             
