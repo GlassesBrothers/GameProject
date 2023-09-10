@@ -1,5 +1,6 @@
 import pygame
 import os
+import time
 
 class RestingroomState:
     def __init__(self, screen_width, screen_height, screen, inventory_equipped_item):
@@ -11,19 +12,9 @@ class RestingroomState:
 
         # 상대경로 만들기
         self.script_directory = os.path.dirname(os.path.abspath(__file__))
-        #items flag
-        self.restingroom_book_flag = True
-        self.restingroom_plug_flag = True
-        self.restingRoom_plantnutrients_flag = True
-        self.restingroom_tablit_flag = False
-        #text flag
-        self.restingRoom_plantnutrients_count = 1
+
+        # 텍스트 시작 시간 변수
         self.text_start_time = None
-        self.show_restingroom_book_text = True
-        self.show_restingroom_plug_text = True
-        self.show_restingroom_plantnutrients_text = True
-        self.show_restingroom_tablit_text = True
-        
 
         # 텍스트 바가 있는지 없는지 나타냄(True -> o, False -> x)
         self.show_text = False
@@ -83,7 +74,7 @@ class RestingroomState:
         self.RestingRoom_door_path = os.path.join(self.script_directory,
             "../image/RestingRoom/RestingRoom_Door.png")
         self.RestingRoom_onplug_path = os.path.join(self.script_directory,
-         "../image/RestingRoom/RestingRoom_OnPlug.png")
+            "../image/RestingRoom/RestingRoom_OnPlug.png")
         self.RestingRoom_plant_path = os.path.join(self.script_directory,
             "../image/RestingRoom/RestingRoom_Plant.png")
         self.RestingRoom_plantnutrients_path = os.path.join(self.script_directory,
@@ -124,8 +115,9 @@ class RestingroomState:
         self.RestingRoom_book_rect = self.RestingRoom_book.get_rect()
         
         self.RestingRoom_door_rect = self.RestingRoom_door.get_rect()
+        
         self.RestingRoom_onplug_rect = self.RestingRoom_onplug.get_rect()
-        # self.RestingRoom_noplug_rect = self.RestingRoom_noplug.get_rect()
+        
         self.RestingRoom_plant_rect = self.RestingRoom_plant.get_rect()
         
         self.RestingRoom_plantnutrients_rect = self.RestingRoom_plantnutrients.get_rect()
@@ -138,12 +130,14 @@ class RestingroomState:
 
         self.RestingRoom_background_rect.center = (self.screen_width // 2, self.screen_height // 2)
         self.RestingRoom_book_rect.center = (130, 268)
-        self.RestingRoom_door_rect.topright = (self.screen_width+15, self.screen_height//5+15)
-        # self.RestingRoom_noplug_rect.center = (967, 540)
+
+        self.RestingRoom_door_rect.topleft = (1216, 195)
+        
         self.RestingRoom_onplug_rect.center = (967, 540)
+
         self.RestingRoom_plant_rect.center = (358,488)
         self.RestingRoom_plantnutrients_rect.center = (316, 524)
-        self.RestingRoom_tablitoff_rect.center = (593,467)
+
         self.RestingRoom_tabliton_rect.center = (593,467)
 
         
@@ -160,26 +154,29 @@ class RestingroomState:
                 # 이건 건드릴 필요 없음
                 pass
             else:
-                # 여기서부터 상호작용 이벤트를 넣으면 됨
-                # 예시를 보여줄게.
-                # 상호작용은 무조건 _rect가 들어가야 해.
-                # collidepoint는 (event.pos -> 마우스 클릭했을 때의 위치) 감지하는 거야.
-                # 이미지 크기 안에서 있는지 없는지 True or False로 나오지.
-                if self.RestingRoom_book_rect.collidepoint(event.pos):
-                    self.restingroom_book_flag = False
+                if self.RestingRoom_book_rect.collidepoint(event.pos):#플래그를 작동
+                    self.rest_book_flag = True
+                    self.rest_booK_text = True
                     self.inventory_items.append(self.Inventory_book)
-
-                elif self.RestingRoom_onplug_rect.collidepoint(event.pos):
-                    self.restingroom_plug_flag = False
+                
+                if self.RestingRoom_onplug_rect.collidepoint(event.pos):
+                    self.rest_plug_flag = True
+                    self.rest_plug_text = True
                     self.inventory_items.append(self.Inventory_Plug)
 
-                elif self.RestingRoom_plantnutrients_rect.collidepoint(event.pos):
-                    if self.restingRoom_plantnutrients_count == 3:
-                        self.restingRoom_plantnutrients_flag = False
-                        self.inventory_items.append(self.Inventory_Key)
+                if self.RestingRoom_plant_rect.collidepoint(event.pos):
+                    self.rest_plant_text = True
 
-                elif self. RestingRoom_door_rect.collidepoint(event.pos):
-                    self.game_state = "hollway"
+                if self.RestingRoom_plantnutrients_rect.collidepoint(event.pos):
+                    self.rest_key_flag = True
+                    self.rest_key_text = True
+                    self.inventory_items.append(self.Inventory_Key)
+
+                if self.RestingRoom_tabliton_rect.collidepoint(event.pos):
+                    print('테블릿이다.')
+
+                if self.RestingRoom_door_rect.collidepoint(event.pos):
+                            self.game_state = "hollway"
 
         
         # 키보드 이벤트 처리
@@ -197,25 +194,17 @@ class RestingroomState:
             
             # 만약 키보드의 z를 눌렀을 때 그리고 Z를 누를 수 있을 때 판단
             elif event.key == pygame.K_z and not self.noZ:
-                if not self.restingroom_book_flag:
-                    # 출력을 중단하게 False로 바꾸고
-                    self.show_text = False
-                    # 클릭할 수 있게 False로 설정
-                    self.noclick = False
-                    self.text_start_time = None
-                    self.show_restingroom_book_text = False
-
-                if not self.restingroom_plug_flag:
-                    self.show_text = False
-                    self.noclick = False
-                    self.text_start_time = None
-                    self.show_restingroom_plug_text = False
-
-                if not self.show_restingroom_plantnutrients_text:
-                    self.show_text = False
-                    self.noclick = False
-                    self.text_start_time = None
-                    self.show_restingroom_plantnutrients_text = False
+                # 텍스트 출력 시간 초기화
+                self.text_start_time = None
+                # 출력을 중단하게 False로 바꾸고
+                self.show_text = False
+                # 클릭할 수 있게 False로 설정
+                self.noclick = False
+                # 컴퓨터 이미지 불 함수 False로 설정
+                self.rest_booK_text = False
+                self.rest_plug_text = False
+                self.rest_plant_text = False
+                self.rest_key_text = False
     
     # 텍스트 박스를 보여주는 함수
     # 여긴 건드릴 필요없어.
@@ -255,58 +244,48 @@ class RestingroomState:
         # 화면에 글씨를 그리는 작업
         self.screen.blit(text_surface, text_rect)
     
-        
+
 
     # 이 함수는 위에서 네가 설정한 이미지를 화면에 그려주는 함수야.
     def draw(self, screen, event):
         screen.blit(self.RestingRoom_background, self.RestingRoom_background_rect)
-        screen.blit(self.RestingRoom_door, self.RestingRoom_door_rect)
         screen.blit(self.RestingRoom_plant, self.RestingRoom_plant_rect)
-        screen.blit(self.RestingRoom_tablitoff, self.RestingRoom_tablitoff_rect)
+        
         screen.blit(self.RestingRoom_tabliton, self.RestingRoom_tabliton_rect)
-        # screen.blit(self.RestingRoom_noplug, self.RestingRoom_noplug_rect)
-        if self.restingroom_book_flag:
-            screen.blit(self.RestingRoom_book, self.RestingRoom_book_rect)
-        else:
-            if self.show_restingroom_book_text:
-                self.show_text = True
-                if self.text_start_time is None:
-                    self.text_start_time = pygame.time.get_ticks()
-                self.elapsed_time = pygame.time.get_ticks() - self.text_start_time
-                self.show_text_box("'동력제어' 책을 흭득했다.", self.elapsed_time)
-                pygame.display.flip()
-        if self.restingroom_plug_flag:
-            screen.blit(self.RestingRoom_onplug, self.RestingRoom_onplug_rect)
-        else:
-            if self.show_restingroom_plug_text:
+
+        if self.rest_plug_flag:
+            if self.rest_plug_text:
                 self.show_text = True
                 if self.text_start_time is None:
                     self.text_start_time = pygame.time.get_ticks()
                 self.elapsed_time = pygame.time.get_ticks() - self.text_start_time
                 self.show_text_box("플러그를 흭득했다.", self.elapsed_time)
-                pygame.display.flip()
-        if self.restingRoom_plantnutrients_flag:
-            screen.blit(self.RestingRoom_plantnutrients, self.RestingRoom_plantnutrients_rect)
+        elif not self.rest_plug_flag:
+            screen.blit(self.RestingRoom_onplug, self.RestingRoom_onplug_rect)
+
+        if self.rest_book_flag:
+            if self.rest_booK_text:
+                self.show_text = True
+                if self.text_start_time is None:
+                    self.text_start_time = pygame.time.get_ticks()
+                self.elapsed_time = pygame.time.get_ticks() - self.text_start_time
+                self.show_text_box("'동력제어' 책을 흭득했다.", self.elapsed_time)
         else:
-            if self.show_restingroom_plantnutrients_text:
-                if self.restingRoom_plantnutrients_count == 1:
-                    self.show_text = True
-                    if self.text_start_time is None:
-                        self.text_start_time = pygame.time.get_ticks()
-                    self.elapsed_time = pygame.time.get_ticks() - self.text_start_time
-                    self.show_text_box("식물 영양제다.", self.elapsed_time)
-                    pygame.display.flip()
-                elif self.restingRoom_plantnutrients_count == 2:
-                    self.show_text = True
-                    if self.text_start_time is None:
-                        self.text_start_time = pygame.time.get_ticks()
-                    self.elapsed_time = pygame.time.get_ticks() - self.text_start_time
-                    self.show_text_box("자세히 보니 무언가 어색하다.", self.elapsed_time)
-                    pygame.display.flip()
-                elif self.restingRoom_plantnutrients_count == 3:
-                    self.show_text = True
-                    if self.text_start_time is None:
-                        self.text_start_time = pygame.time.get_ticks()
-                    self.elapsed_time = pygame.time.get_ticks() - self.text_start_time
-                    self.show_text_box("식물 영양제를 획득했다!", self.elapsed_time)
-                    pygame.display.flip()
+            screen.blit(self.RestingRoom_book, self.RestingRoom_book_rect)
+
+        if self.rest_plant_text:
+            self.show_text = True
+            if self.text_start_time is None:
+                self.text_start_time = pygame.time.get_ticks()
+            self.elapsed_time = pygame.time.get_ticks() - self.text_start_time
+            self.show_text_box("인조 식물이 심어져 있는 화분이다.", self.elapsed_time)
+        
+        if self.rest_key_flag:
+            if self.rest_key_text:
+                self.show_text = True
+                if self.text_start_time is None:
+                    self.text_start_time = pygame.time.get_ticks()
+                self.elapsed_time = pygame.time.get_ticks() - self.text_start_time
+                self.show_text_box("영양제인 줄 알았지만 금고 키였다.", self.elapsed_time)
+        else:
+            screen.blit(self.RestingRoom_plantnutrients, self.RestingRoom_plantnutrients_rect)
