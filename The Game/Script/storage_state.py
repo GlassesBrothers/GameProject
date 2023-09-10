@@ -132,7 +132,7 @@ class StorageState:
                     #if self.equipped_item == "safekey":
                         #if self.safekey in self.inventory_items:
                     print("닫힌 상자")
-                    if self.equipped_item == "key":
+                    if self.inventory_equipped_item == "key":
                         self.storage_box_state = True
                         self.ClosedBox_rect.center = (-100, -100)
                     
@@ -225,8 +225,7 @@ class StorageState:
         text_rect = text_surface.get_rect(center=text_box_rect.center)
         self.screen.blit(text_surface, text_rect)
         
-                
-                
+
     def get_inventory_items(self):
         return self.inventory_items
                 

@@ -2,12 +2,13 @@ import pygame
 import os
 
 class HollwayState:
-    def __init__(self, screen_width, screen_height, screen):
+    def __init__(self, screen_width, screen_height, screen, inventory_equipped_item):
 
         self.screen_width = screen_width
         self.screen_height = screen_height
         self.game_state = "hollway"
         self.screen = screen
+        self.inventory_equipped_item = inventory_equipped_item
 
         self.script_directory = os.path.dirname(os.path.abspath(__file__))
 
