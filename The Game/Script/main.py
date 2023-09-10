@@ -5,7 +5,7 @@ import lab_state
 import hollway_state
 import restingroom_state
 import securityroom_state
-#import storage_state
+import storage_state
 
 
 black = (0, 0, 0)
@@ -54,7 +54,7 @@ lab_state = lab_state.LabState(screen_width, screen_height, screen, inventory_eq
 restingroom_state = restingroom_state.RestingroomState(screen_width, screen_height, screen, inventory_equipped_item)
 hollway_state = hollway_state.HollwayState(screen_width, screen_height, screen)
 securityroom_state = securityroom_state.SecurityroomState(screen_width, screen_height, screen, inventory_equipped_item)
-#storage_state = storage_state.StorageState(screen_width, screen_height, screen, inventory_equipped_item)
+storage_state = storage_state.StorageState(screen_width, screen_height, screen, inventory_equipped_item)
 
 equipped_item = None  # 현재 장착된 아이템을 저장하는 변수
 
@@ -119,7 +119,7 @@ while running:
             game_state = lab_state.game_state
         elif game_state == "hollway":
             lab_state.game_state = "lab"
-            #storage_state.game_state = "storage"
+            storage_state.game_state = "storage"
             restingroom_state.game_state = "restingroom"
             securityroom_state.game_state = "securityroom"
             inventory = hollway_state.inventory
@@ -128,13 +128,13 @@ while running:
             game_state = hollway_state.game_state
         elif game_state == "storage":
             hollway_state.game_state = "hollway"
-            #game_state = storage_state.game_state   
-            #inventory = storage_state.inventory
-            #new_items = storage_state.inventory_items
-            # for item in new_items:
-            #     if item not in inventory_items:
-            #         inventory_items.append(item)
-            #storage_state.handle_event(event)
+            game_state = storage_state.game_state   
+            inventory = storage_state.inventory
+            new_items = storage_state.inventory_items
+            for item in new_items:
+                if item not in inventory_items:
+                    inventory_items.append(item)
+            storage_state.handle_event(event)
         elif game_state == "restingroom":
             hollway_state.game_state = "hollway"
             inventory = restingroom_state.inventory
@@ -163,8 +163,7 @@ while running:
     elif game_state == "hollway":
         hollway_state.draw(screen)
     elif game_state == "storage":
-        #storage_state.draw(screen)
-        pass
+        storage_state.draw(screen)
     elif game_state == "restingroom":
         restingroom_state.draw(screen, event)
     elif game_state == "securityroom":
@@ -214,14 +213,30 @@ while running:
         # 아이템 종류에 따라 inventory_equipped_item 설정
         if equipped_item == lab_state.lab_wire:
             lab_state.inventory_equipped_item = "lab_wire"
+            storage_state.inventory_equipped_item = "lab_wire"
+            restingroom_state.inventory_equipped_item = "lab_wire"
         elif equipped_item == lab_state.lab_switch:
             lab_state.inventory_equipped_item = "lab_switch"
+            storage_state.inventory_equipped_item = "lab_switch"
+            restingroom_state.inventory_equipped_item = "lab_switch"
         elif equipped_item == lab_state.keyCard:
             lab_state.inventory_equipped_item = "keykard"
-        # elif equipped_item == storage_state.storage_toolbox_screwdriver:
-        #     storage_state.inventory_equipped_item = "storage_toolbox_screwdriver"
-        # elif equipped_item == storage_state.restingroom_kitchen_key:
-        #     storage_state.inventory_equipped_item = "restingroom_kitchen_key"
+            storage_state.inventory_equipped_item = "keykard"
+            restingroom_state.inventory_equipped_item = "keykard"
+        elif equipped_item == storage_state.storage_toolbox_screwdriver:
+            lab_state.inventory_equipped_item = "storage_toolbox_screwdriver"
+            storage_state.inventory_equipped_item = "storage_toolbox_screwdriver"
+            restingroom_state.inventory_equipped_item = "storage_toolbox_screwdriver"
+        elif equipped_item == storage_state.safekey:
+            lab_state.inventory_equipped_item = "safekey"
+            storage_state.inventory_equipped_item = "safekey"
+            restingroom_state.inventory_equipped_item = "safekey"
+        elif equipped_item == restingroom_state.Inventory_Key:
+            lab_state.inventory_equipped_item = "key"
+            storage_state.inventory_equipped_item = "key"
+            restingroom_state.inventory_equipped_item = "key"
+
+        
 
     pygame.display.flip()
 

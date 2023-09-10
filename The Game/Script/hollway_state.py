@@ -49,6 +49,8 @@ class HollwayState:
 
         self.show_secret_code = False
 
+        self.storagedoor_flag = False
+
         self.exitdoor_flag = False
 
         self.exitdoor_text = False
@@ -76,13 +78,12 @@ class HollwayState:
                     else:
                         self.exitdoor_flag = True
                         self.exitdoor_text = True
-
                 elif self.labdoor_rect.collidepoint(event.pos):  # 이미지 위에서 클릭되었는지 확인
                     self.game_state = "lab"
                 elif self.retiringdoor_rect.collidepoint(event.pos):  # 이미지 위에서 클릭되었는지 확인
                     self.game_state = "restingroom"
                 elif self.storagedoor_rect.collidepoint(event.pos):  # 이미지 위에서 클릭되었는지 확인
-                    self.game_state = 'storage'
+                    self.game_state = "storage"
                 elif self.seciritydoor_rect.collidepoint(event.pos):  # 이미지 위에서 클릭되었는지 확인
                     self.game_state = "securityroom"
         if event.type == pygame.KEYDOWN:  # 키보드 이벤트 처리
@@ -109,6 +110,7 @@ class HollwayState:
                     self.noclick = False
                     # 컴퓨터 이미지 불 함수 False로 설정
                     self.exitdoor_flag = False
+                    self.storagedoor_flag = False
             if self.exitdoor_flag:
                 if not self.show_secret_code:
                     if event.key == pygame.K_BACKSPACE:
@@ -185,3 +187,10 @@ class HollwayState:
 
                     # 이미지에 텍스트를 그림
                     screen.blit(text_surface, text_rect)
+
+        if self.storagedoor_flag:
+            self.show_text = True
+            if self.text_start_time is None:
+                self.text_start_time = pygame.time.get_ticks()
+            self.elapsed_time = pygame.time.get_ticks() - self.text_start_time
+            self.show_text_box("문이 잠겨 있다.", self.elapsed_time)
