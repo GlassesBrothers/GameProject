@@ -77,6 +77,8 @@ class HollwayState:
 
         self.noZ = False
 
+        self.restingdoor_flag = False
+
         self.code_screen = pygame.Surface((800, 600))  # 컴퓨터 화면을 그릴 Surface 생성
         self.code_screen.fill((200, 200, 200))  # 회색 배경으로 초기화
         self.code_screen_rect = self.code_screen.get_rect()
@@ -97,18 +99,22 @@ class HollwayState:
                 elif self.labdoor_rect.collidepoint(event.pos):  # 이미지 위에서 클릭되었는지 확인
                     self.game_state = "lab"
                 elif self.retiringdoor_rect.collidepoint(event.pos):  # 이미지 위에서 클릭되었는지 확인
-                    if self.inventory_equipped_item == "lab_wire":
-                        self.rest_wire_flag = True
-                        self.rest_wire_text = True
-                    elif self.inventory_equipped_item == "lab_switch":
-                        self.rest_switch_flag = True
-                        self.rest_switch_text = True
-                    elif self.inventory_equipped_item == "gunpowder":
-                        self.rest_gunpowder_flag = True
-                        self.rest_gunpowder_text = True
-                    elif self.inventory_equipped_item == "battery":
-                        self.rest_battary_flag = True
-                    self.retiringdoor_text = True
+                    
+                    if self.restingdoor_flag:
+                        self.game_state = "restingroom"
+                    else:
+                        if self.inventory_equipped_item == "lab_wire":
+                            self.rest_wire_flag = True
+                            self.rest_wire_text = True
+                        elif self.inventory_equipped_item == "lab_switch":
+                            self.rest_switch_flag = True
+                            self.rest_switch_text = True
+                        elif self.inventory_equipped_item == "gunpowder":
+                            self.rest_gunpowder_flag = True
+                            self.rest_gunpowder_text = True
+                        elif self.inventory_equipped_item == "battery":
+                            self.rest_battary_flag = True
+                        self.retiringdoor_text = True
                     # self.game_state = "restingroom"
                 elif self.storagedoor_rect.collidepoint(event.pos):  # 이미지 위에서 클릭되었는지 확인
                     self.game_state = "storage"
@@ -256,7 +262,7 @@ class HollwayState:
                 self.elapsed_time = pygame.time.get_ticks() - self.text_start_time
                 self.show_text_box("폭탄이 설치됨과 동시에 터지며 열렸다.", self.elapsed_time)
             else:
-                self.game_state = "restingroom"
+                self.restingdoor_flag = True
                 self.rest_wire_flag = False
                 self.rest_switch_flag = False
                 self.rest_gunpowder_flag = False

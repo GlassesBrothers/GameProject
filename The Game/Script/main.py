@@ -72,7 +72,7 @@ def draw_inventory():
         # 인벤토리 창 배경 그리기 (크기 조정 및 모서리 둥글게 처리)
         border_radius = 20  # 모서리의 둥글기 정도 설정
         pygame.draw.rect(screen, black, (inventory_x-10, inventory_y-10, inventory_width+10, inventory_height+10), border_radius=border_radius)
-
+        
         slot_index = 0  # 슬롯의 인덱스 초기화
         for row in range(num_rows):
             for col in range(num_cols):
@@ -218,16 +218,31 @@ while running:
         equipped_item_rect = pygame.Rect(screen_width - 110, screen_height - 110, 100, 100)
         equipped_item_image_rect = equipped_item.get_rect(center=equipped_item_rect.center)
         box_size = 100
-        box_surface = pygame.Surface((box_size, box_size), pygame.SRCALPHA)  # 투명한 Surface 생성
+        box_surface = pygame.Surface((box_size, box_size))  # 투명한 Surface 생성
+        box_surface.fill((200, 200, 200))
         pygame.draw.rect(box_surface, (0, 0, 0), pygame.Rect(0, 0, box_size, box_size), 3)  # 테두리 그리기
 
-        if lab_state.show_text or hollway_state.show_text or storage_state.show_text or restingroom_state.show_text or securityroom_state.show_text:
+        if lab_state.show_text or hollway_state.show_text or storage_state.show_text or restingroom_state.show_text or securityroom_state.show_text or game_state == "ending":
             pass
         else:
             # 박스 배경을 투명하게 설정하고 장착된 아이템 이미지 그리기
             screen.blit(box_surface, (equipped_item_rect.left - (box_size - equipped_item_rect.width) / 2,
                                 equipped_item_rect.top - (box_size - equipped_item_rect.height) / 2))
             screen.blit(equipped_item, equipped_item_image_rect)  # 아이템 이미지 표시
+
+            # 폴더 아래에 표시할 텍스트
+            folder_text = " 장착 아이템"
+
+            # 폴더 아래에 텍스트를 그리기 위한 폰트 설정
+            font = pygame.font.SysFont("malgungothic", 15, True)
+            text_surface = font.render(folder_text, True, (0, 0, 0))
+
+            # 텍스트를 그릴 위치 설정 (이 예제에서는 폴더 이미지 아래 중앙에 위치하도록 설정)
+            text_rect = text_surface.get_rect()
+            text_rect.center = (equipped_item_rect.centerx - 2, equipped_item_rect.top + 10)
+
+            # 이미지에 텍스트를 그림
+            screen.blit(text_surface, text_rect)
 
         # 아이템 종류에 따라 inventory_equipped_item 설정
         if equipped_item == lab_state.lab_wire:

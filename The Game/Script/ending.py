@@ -39,7 +39,7 @@ class Ending:
 
         # 타이머 설정
         self.start_time = pygame.time.get_ticks()
-        self.display_duration = 15000  # 5초 (단위: 밀리초)
+        self.display_duration = 18000  # 5초 (단위: 밀리초)
 
     def handle_event(self, event):
         if event.type == pygame.KEYDOWN:

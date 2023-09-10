@@ -13,7 +13,7 @@ class StartState:
         self.script_directory = os.path.dirname(os.path.abspath(__file__))
 
         # 이미지 불러오기
-        self.background_image_path = os.path.join(self.script_directory, "../image/Other/startpage.png")
+        self.background_image_path = os.path.join(self.script_directory, "../image/Start/Start_Background.png")
         self.background_image = pygame.image.load(self.background_image_path)
         self.background_rect = self.background_image.get_rect()
 
@@ -26,9 +26,9 @@ class StartState:
         self.option_rect = pygame.Rect(106, 323, 212, 68)
         self.exit_rect = pygame.Rect(106, 446, 212, 68)
         
-        self.play_rect.topleft = (106, 204)
-        self.option_rect.topleft = (106, 323)
-        self.exit_rect.topleft = (106, 446)
+        self.play_rect.topleft = (212, 128)
+        self.option_rect.topleft = (212, 329)
+        self.exit_rect.topleft = (212, 520)
 
         self.option_flag = False
 
