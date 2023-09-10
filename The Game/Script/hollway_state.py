@@ -47,6 +47,23 @@ class HollwayState:
         self.inventory_visible = False
         self.other_interaction_state = False
 
+        self.show_secret_code = False
+
+        self.exitdoor_flag = False
+
+        self.exitdoor_text = False
+
+        self.font = pygame.font.Font(None, 36)
+        self.code = ""
+        self.input_code = ""
+
+        self.noZ = False
+
+        self.code_screen = pygame.Surface((800, 600))  # 컴퓨터 화면을 그릴 Surface 생성
+        self.code_screen.fill((200, 200, 200))  # 회색 배경으로 초기화
+        self.code_screen_rect = self.code_screen.get_rect()
+        self.code_screen_rect.center = (screen_width // 2, screen_height // 2)  # 화면 중앙에 위치
+
     def handle_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
             print(pygame.mouse.get_pos())
@@ -54,7 +71,12 @@ class HollwayState:
                 pass
             else:
                 if self.exitdoor_rect.collidepoint(event.pos):  # 이미지 위에서 클릭되었는지 확인
-                    print('exitdoor') 
+                    if self.show_secret_code:
+                        pass
+                    else:
+                        self.exitdoor_flag = True
+                        self.exitdoor_text = True
+
                 elif self.labdoor_rect.collidepoint(event.pos):  # 이미지 위에서 클릭되었는지 확인
                     self.game_state = "lab"
                 elif self.retiringdoor_rect.collidepoint(event.pos):  # 이미지 위에서 클릭되었는지 확인
@@ -69,10 +91,47 @@ class HollwayState:
                     self.inventory = "inventory"
                 else:
                     self.inventory = None  # 인벤토리를 닫을 때는 원래 상태로 돌아가기
-            elif event.key == pygame.K_z:
-                pass
+            elif event.key == pygame.K_z and not self.noZ:
+                if self.exitdoor_text:
+                    # 텍스트 출력 시간 초기화
+                    self.text_start_time = None
+                    # 출력을 중단하게 False로 바꾸고
+                    self.show_text = False
+                    # 클릭할 수 있게 False로 설정
+                    self.noclick = False
+                    self.exitdoor_text = False
+                else:
+                    # 텍스트 출력 시간 초기화
+                    self.text_start_time = None
+                    # 출력을 중단하게 False로 바꾸고
+                    self.show_text = False
+                    # 클릭할 수 있게 False로 설정
+                    self.noclick = False
+                    # 컴퓨터 이미지 불 함수 False로 설정
+                    self.exitdoor_flag = False
+            if self.exitdoor_flag:
+                if not self.show_secret_code:
+                    if event.key == pygame.K_BACKSPACE:
+                        self.code = self.code[:-1]
+                    elif event.key == pygame.K_RETURN:
+                        if self.code == "Adaddon":
+                            self.show_secret_code = True
+                        else:
+                            print("잘못된 아이디!")
+                            self.code = ""  # 아이디 입력 초기화
+                    else:
+                        self.code += event.unicode  # event.unicode로 입력된 글자 가져오기
+                    if event.key == pygame.K_f:
+                        self.exitdoor_flag = False
+                        self.noclick = False
+                        self.noZ = False
+
 
     def show_text_box(self, text, elapsed_time):
+        # 출력 변수를 true로 설정하고 클릭할 수 없게 True로 설정
+        self.show_text = True
+        self.noclick = True
+
         text_box_rect = pygame.Rect(50, self.screen_height - 220, self.screen_width - 100, 200)
         pygame.draw.rect(self.screen, (0,0,0), text_box_rect)
         pygame.draw.rect(self.screen, (255,255,255), text_box_rect.inflate(-5, -5))
@@ -85,6 +144,11 @@ class HollwayState:
         text_surface = font.render(visible_text, True, (0,0,0))
         text_rect = text_surface.get_rect(center=text_box_rect.center)
         self.screen.blit(text_surface, text_rect)
+
+    def draw_text(self, text, pos):
+        text_surface = self.font.render(text, True, (0, 0, 0))
+        text_rect = text_surface.get_rect(center=pos)
+        self.screen.blit(text_surface, text_rect)
     
     def draw(self, screen):
         screen.blit(self.Hollway_background, self.Hollway_background_rect)
@@ -93,3 +157,31 @@ class HollwayState:
         #screen.blit(self.retiringdoor, self.retiringdoor_rect)
         screen.blit(self.storagedoor, self.storagedoor_rect)
         screen.blit(self.seciritydoor, self.seciritydoor_rect)
+        if self.exitdoor_flag:
+            if self.exitdoor_text:
+                self.show_text = True
+                if self.text_start_time is None:
+                    self.text_start_time = pygame.time.get_ticks()
+                self.elapsed_time = pygame.time.get_ticks() - self.text_start_time
+                self.show_text_box("문이 잠겨 있다.", self.elapsed_time)
+            else:
+                if not self.show_secret_code:
+                    self.noZ = True
+                    self.noclick = True
+                    pygame.draw.rect(self.screen, (0, 0, 0), 
+                        (self.code_screen_rect.left - 5, self.code_screen_rect.top - 5, 810, 610), 5)
+                    screen.blit(self.code_screen, self.code_screen_rect)
+                    self.draw_text("Secret Code : " + self.code, (self.screen_width // 2, self.screen_height // 2))
+                    # 폴더 아래에 표시할 텍스트
+                    folder_text = " 나가기 버튼 : F"
+
+                    # 폴더 아래에 텍스트를 그리기 위한 폰트 설정
+                    font = pygame.font.SysFont("malgungothic", 20, True)
+                    text_surface = font.render(folder_text, True, (0, 0, 0))
+
+                    # 텍스트를 그릴 위치 설정 (이 예제에서는 폴더 이미지 아래 중앙에 위치하도록 설정)
+                    text_rect = text_surface.get_rect()
+                    text_rect.bottomleft = (self.code_screen_rect.x, self.code_screen_rect.bottom)
+
+                    # 이미지에 텍스트를 그림
+                    screen.blit(text_surface, text_rect)

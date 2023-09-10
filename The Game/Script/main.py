@@ -143,6 +143,7 @@ while running:
                 if item not in inventory_items:
                     inventory_items.append(item)
             restingroom_state.handle_event(event)
+            game_state = restingroom_state.game_state
         elif game_state == "securityroom":
             hollway_state.game_state = "hollway"
             inventory = securityroom_state.inventory
@@ -151,6 +152,7 @@ while running:
                 if item not in inventory_items:
                     inventory_items.append(item)
             securityroom_state.handle_event(event)
+            game_state = securityroom_state.game_state
 
     screen.fill(white)
 
