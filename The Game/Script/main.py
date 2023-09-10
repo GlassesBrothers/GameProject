@@ -51,7 +51,7 @@ pygame.display.set_caption('The Game')
 developer_names = endingcredit_state.developer_names
 
 # 게임 상태 정의
-game_state = "restingroom"
+game_state = "start"
 
 # 시작 화면과 연구실 화면 객체 생성
 start_state = start_state.StartState(screen_width, screen_height)
