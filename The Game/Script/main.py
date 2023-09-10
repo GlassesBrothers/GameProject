@@ -6,6 +6,10 @@ import hollway_state
 import restingroom_state
 import securityroom_state
 import storage_state
+import endingcredit_state
+from endingcredit_state import ending_credit
+from ending import Ending
+
 
 
 black = (0, 0, 0)
@@ -44,9 +48,10 @@ pygame.init()
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption('The Game')
 
+developer_names = endingcredit_state.developer_names
 
 # 게임 상태 정의
-game_state = "hollway"
+game_state = "start"
 
 # 시작 화면과 연구실 화면 객체 생성
 start_state = start_state.StartState(screen_width, screen_height)
@@ -55,7 +60,8 @@ restingroom_state = restingroom_state.RestingroomState(screen_width, screen_heig
 hollway_state = hollway_state.HollwayState(screen_width, screen_height, screen, inventory_equipped_item)
 securityroom_state = securityroom_state.SecurityroomState(screen_width, screen_height, screen, inventory_equipped_item)
 storage_state = storage_state.StorageState(screen_width, screen_height, screen, inventory_equipped_item)
-
+endingcredit_state = endingcredit_state.EndingCredit(screen_width, screen_height, developer_names)
+ending = Ending(screen_width, screen_height, screen)
 equipped_item = None  # 현재 장착된 아이템을 저장하는 변수
 
 
@@ -138,7 +144,6 @@ while running:
                     inventory_items.append(item)
             storage_state.handle_event(event)
             storage_state.inventory_equipped_item = inventory_equipped_item
-            print(inventory_equipped_item)
         elif game_state == "restingroom":
             hollway_state.game_state = "hollway"
             inventory = restingroom_state.inventory
@@ -159,6 +164,9 @@ while running:
             securityroom_state.handle_event(event)
             game_state = securityroom_state.game_state
             securityroom_state.inventory_equipped_item = inventory_equipped_item
+        elif game_state == "ending":
+            ending.handle_event(event)
+            game_state = ending.game_state
 
     screen.fill(white)
 
@@ -174,6 +182,11 @@ while running:
         restingroom_state.draw(screen, event)
     elif game_state == "securityroom":
         securityroom_state.draw(screen, event)
+    elif game_state == "endingcredit":
+        ending_credit.run()
+    elif game_state == "ending":
+            ending.draw()
+            game_state = ending.game_state
 
     if inventory == "inventory":
             draw_inventory()  # 인벤토리 창 그리기
@@ -208,7 +221,7 @@ while running:
         box_surface = pygame.Surface((box_size, box_size), pygame.SRCALPHA)  # 투명한 Surface 생성
         pygame.draw.rect(box_surface, (0, 0, 0), pygame.Rect(0, 0, box_size, box_size), 3)  # 테두리 그리기
 
-        if lab_state.show_text or hollway_state.show_text:
+        if lab_state.show_text or hollway_state.show_text or storage_state.show_text or restingroom_state.show_text or securityroom_state.show_text:
             pass
         else:
             # 박스 배경을 투명하게 설정하고 장착된 아이템 이미지 그리기
@@ -225,10 +238,19 @@ while running:
             inventory_equipped_item = "keykard"
         elif equipped_item == storage_state.storage_toolbox_screwdriver:
             inventory_equipped_item = "storage_toolbox_screwdriver"
-        elif equipped_item == storage_state.safekey:
-            inventory_equipped_item = "safekey"
+        elif equipped_item == storage_state.storage_keycard:
+            inventory_equipped_item = "storage_keycard"
+        elif equipped_item == storage_state.storage_gunpowder:
+            inventory_equipped_item = "gunpowder"
+        elif equipped_item == storage_state.inventory_battery:
+            inventory_equipped_item = "battery"
         elif equipped_item == restingroom_state.Inventory_Key:
             inventory_equipped_item = "key"
+        elif equipped_item == restingroom_state.Inventory_book:
+            inventory_equipped_item = "book"
+        elif equipped_item == restingroom_state.Inventory_Plug:
+            inventory_equipped_item = "plug"
+        
 
         
 

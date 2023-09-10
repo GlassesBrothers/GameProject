@@ -56,6 +56,21 @@ class HollwayState:
 
         self.exitdoor_text = False
 
+        self.seciritydoor_key_flag = False
+        self.seciritydoor_flag = False
+        self.seciritydoor_text = False
+
+        self.rest_wire_flag = False
+        self.rest_switch_flag = False
+        self.rest_wire_text = False
+        self.rest_switch_text = False
+
+        self.rest_gunpowder_flag = False
+        self.rest_gunpowder_text = False
+        self.retiringdoor_text = False
+
+        self.rest_battary_flag = False
+
         self.font = pygame.font.Font(None, 36)
         self.code = ""
         self.input_code = ""
@@ -82,11 +97,25 @@ class HollwayState:
                 elif self.labdoor_rect.collidepoint(event.pos):  # 이미지 위에서 클릭되었는지 확인
                     self.game_state = "lab"
                 elif self.retiringdoor_rect.collidepoint(event.pos):  # 이미지 위에서 클릭되었는지 확인
-                    self.game_state = "restingroom"
+                    if self.inventory_equipped_item == "lab_wire":
+                        self.rest_wire_flag = True
+                        self.rest_wire_text = True
+                    elif self.inventory_equipped_item == "lab_switch":
+                        self.rest_switch_flag = True
+                        self.rest_switch_text = True
+                    elif self.inventory_equipped_item == "gunpowder":
+                        self.rest_gunpowder_flag = True
+                        self.rest_gunpowder_text = True
+                    elif self.inventory_equipped_item == "battery":
+                        self.rest_battary_flag = True
+                    self.retiringdoor_text = True
+                    # self.game_state = "restingroom"
                 elif self.storagedoor_rect.collidepoint(event.pos):  # 이미지 위에서 클릭되었는지 확인
                     self.game_state = "storage"
                 elif self.seciritydoor_rect.collidepoint(event.pos):  # 이미지 위에서 클릭되었는지 확인
-                    self.game_state = "securityroom"
+                    if self.inventory_equipped_item == "storage_keycard":
+                        self.seciritydoor_key_flag = True
+                    self.seciritydoor_text = True
         if event.type == pygame.KEYDOWN:  # 키보드 이벤트 처리
             if event.key == pygame.K_e :
                 if self.inventory != "inventory" and not self.show_text:
@@ -112,12 +141,14 @@ class HollwayState:
                     # 컴퓨터 이미지 불 함수 False로 설정
                     self.exitdoor_flag = False
                     self.storagedoor_flag = False
+                    self.seciritydoor_text = False
+                    self.retiringdoor_text = False
             if self.exitdoor_flag:
                 if not self.show_secret_code:
                     if event.key == pygame.K_BACKSPACE:
                         self.code = self.code[:-1]
                     elif event.key == pygame.K_RETURN:
-                        if self.code == "Adaddon":
+                        if self.code == "Abaddon":
                             self.show_secret_code = True
                         else:
                             print("잘못된 아이디!")
@@ -188,6 +219,8 @@ class HollwayState:
 
                     # 이미지에 텍스트를 그림
                     screen.blit(text_surface, text_rect)
+                else:
+                    self.game_state = 'ending'
 
         if self.storagedoor_flag:
             self.show_text = True
@@ -195,3 +228,51 @@ class HollwayState:
                 self.text_start_time = pygame.time.get_ticks()
             self.elapsed_time = pygame.time.get_ticks() - self.text_start_time
             self.show_text_box("문이 잠겨 있다.", self.elapsed_time)
+
+        if self.seciritydoor_key_flag:
+            if self.seciritydoor_text:
+                self.show_text = True
+                if self.text_start_time is None:
+                    self.text_start_time = pygame.time.get_ticks()
+                self.elapsed_time = pygame.time.get_ticks() - self.text_start_time
+                self.show_text_box("보안실 문이 열렸다.", self.elapsed_time)
+            else:
+                self.game_state = "securityroom"
+                self.seciritydoor_key_flag = False
+        else:
+            if self.seciritydoor_text:
+                self.show_text = True
+                if self.text_start_time is None:
+                    self.text_start_time = pygame.time.get_ticks()
+                self.elapsed_time = pygame.time.get_ticks() - self.text_start_time
+                self.show_text_box("보안실 문이 잠겨있다.", self.elapsed_time)
+        
+        # 와이어, 스위치, 화약, 베터리 모두 o
+        if self.rest_wire_flag and self.rest_switch_flag and self.rest_gunpowder_flag and self.rest_battary_flag:
+            if self.retiringdoor_text:
+                self.show_text = True
+                if self.text_start_time is None:
+                    self.text_start_time = pygame.time.get_ticks()
+                self.elapsed_time = pygame.time.get_ticks() - self.text_start_time
+                self.show_text_box("폭탄이 설치됨과 동시에 터지며 열렸다.", self.elapsed_time)
+            else:
+                self.game_state = "restingroom"
+                self.rest_wire_flag = False
+                self.rest_switch_flag = False
+                self.rest_gunpowder_flag = False
+                self.rest_battary_flag = False
+        elif self.rest_wire_flag or self.rest_switch_flag or self.rest_gunpowder_flag or self.rest_battary_flag:
+            if self.retiringdoor_text:
+                self.show_text = True
+                if self.text_start_time is None:
+                    self.text_start_time = pygame.time.get_ticks()
+                self.elapsed_time = pygame.time.get_ticks() - self.text_start_time
+                self.show_text_box("폭탄의 재료를 넣었다.", self.elapsed_time)
+        else:
+            if self.retiringdoor_text:
+                self.show_text = True
+                if self.text_start_time is None:
+                    self.text_start_time = pygame.time.get_ticks()
+                self.elapsed_time = pygame.time.get_ticks() - self.text_start_time
+                self.show_text_box("문이 열리지 않는다. 폭탄이라면 가능할 수도?", self.elapsed_time)
+

@@ -130,9 +130,9 @@ class LabState:
         self.lab_computer_rect.topleft = (389, 347)
         self.lab_door_rect.topleft = (0, 154)
         self.lab_researcher_rect.topleft = (955, 370)
-        self.lab_profile_rect.topleft = (832, 442)
+        self.lab_profile_rect.topleft = (146, 438)
         self.lab_switch_rect.topleft = (350, 441)
-        self.lab_wire_rect.topleft = (188, 436)
+        self.lab_wire_rect.topleft = (702, 464)
 
         # 다른 상호작용 요소의 상태
         self.inventory_items = []
@@ -449,6 +449,8 @@ class LabState:
                         self.folder3_flag = False
                         self.computer_Lock_flag = False
                 if self.computer_Lock_flag:
+                    pygame.draw.rect(self.screen, (0, 0, 0), (483, 189, 300, 350), 5)
+                    pygame.draw.rect(self.screen, (255, 255, 255), (488, 194, 290, 340))
                     pygame.draw.rect(screen, (255, 0, 0), (759, 194, 20, 20))
                     if event.type == pygame.MOUSEBUTTONDOWN:
                         if pygame.Rect(759, 194, 20, 20).collidepoint(event.pos):  # X 표시를 눌렀는지 확인

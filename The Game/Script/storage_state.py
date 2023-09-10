@@ -26,6 +26,13 @@ class StorageState:
         self.OpenBoxLess_path = os.path.join(self.script_directory, "../image/storage/Storage_SafeOpenLess.png")
         self.OpenStorage_toolbox_path = os.path.join(self.script_directory, "../image/storage/Storage_ToolBox.png")
         self.safekey_path = os.path.join(self.script_directory, "../image/InventoryItems/Inventory_Key.png")
+        self.storage_gunpowder_path = os.path.join(self.script_directory,
+            "../image/InventoryItems/Inventory_Gunpowder.png")
+        self.inventory_battery_path = os.path.join(self.script_directory,
+            "../image/InventoryItems/Inventory_Battery.png")
+        
+        self.storage_gunpowder = pygame.image.load(self.storage_gunpowder_path)
+        self.inventory_battery = pygame.image.load(self.inventory_battery_path)
         self.OpenBoxLess = pygame.image.load(self.OpenBoxLess_path)
         self.storage_background = pygame.image.load(self.storage_background_path)
         self.ClosedBox = pygame.image.load(self.ClosedBox_path)
@@ -51,6 +58,8 @@ class StorageState:
         self.OpenBox_rect = self.OpenBox.get_rect()
         self.ClosedBox_rect = self.ClosedBox.get_rect()
         self.OpenStorage_toolbox_rect = self.OpenStorage_toolbox.get_rect()
+        self.storage_gunpowder_rect = self.storage_gunpowder.get_rect()
+        self.inventory_battery_rect = self.inventory_battery.get_rect()
         
         self.storage_background_rect.center = (self.screen_width // 2, self.screen_height // 2)
         self.storage_battery_rect.center = (310, 328)
@@ -126,7 +135,7 @@ class StorageState:
                 elif self.storage_gunpowderbox_rect.collidepoint(event.pos):
                     self.storage_gunpowderbox_state = False
                     self.storage_gunpowderbox_text = True
-                    self.inventory_items.append(self.storage_gunpowderbox)
+                    self.inventory_items.append(self.storage_gunpowder)
                     
                 elif self.ClosedBox_rect.collidepoint(event.pos):
                     #if self.equipped_item == "safekey":
@@ -139,7 +148,7 @@ class StorageState:
                 elif self.storage_battery_rect.collidepoint(event.pos):
                     self.storage_battery_state = False
                     self.storage_battery_text = True
-                    self.inventory_items.append(self.storage_battery)
+                    self.inventory_items.append(self.inventory_battery)
                 elif self.OpenBox_rect.collidepoint(event.pos):
                     print("열린 상자")
                     self.inventory_items.append(self.storage_keycard)
@@ -234,22 +243,7 @@ class StorageState:
         screen.blit(self.storage_door, self.storage_door_rect)
         if self.storage_gunpowderbox_state:
             screen.blit(self.storage_gunpowderbox, self.storage_gunpowderbox_rect)
-        if self.storage_gunpowderbox_text:
-            self.show_text = True
-            if self.text_start_time is None:
-                self.text_start_time = pygame.time.get_ticks()
-            self.elapsed_time = pygame.time.get_ticks() - self.text_start_time
-            self.show_text_box("화약(을)를 획득했다!", self.elapsed_time)
-            pygame.display.flip()
-        if self.storage_battery_state:
-            screen.blit(self.storage_battery, self.storage_battery_rect)
-        if self.storage_battery_text:
-            self.show_text = True
-            if self.text_start_time is None:
-                self.text_start_time = pygame.time.get_ticks()
-            self.elapsed_time = pygame.time.get_ticks() - self.text_start_time
-            self.show_text_box("배터리(을)를 획득했다!", self.elapsed_time)
-            pygame.display.flip()
+        
         
         if self.storage_toolbox_state:
             # screen.blit(self.OpenStorage_toolbox, self.OpenStorage_toolbox_rect)
@@ -292,3 +286,19 @@ class StorageState:
                     pygame.display.flip()
             else:
                 screen.blit(self.ClosedBox, self.ClosedBox_rect)
+        if self.storage_gunpowderbox_text:
+            self.show_text = True
+            if self.text_start_time is None:
+                self.text_start_time = pygame.time.get_ticks()
+            self.elapsed_time = pygame.time.get_ticks() - self.text_start_time
+            self.show_text_box("화약(을)를 획득했다!", self.elapsed_time)
+            pygame.display.flip()
+        if self.storage_battery_state:
+            screen.blit(self.storage_battery, self.storage_battery_rect)
+        if self.storage_battery_text:
+            self.show_text = True
+            if self.text_start_time is None:
+                self.text_start_time = pygame.time.get_ticks()
+            self.elapsed_time = pygame.time.get_ticks() - self.text_start_time
+            self.show_text_box("배터리(을)를 획득했다!", self.elapsed_time)
+            pygame.display.flip()

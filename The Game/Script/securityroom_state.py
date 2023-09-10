@@ -62,6 +62,12 @@ class SecurityroomState:
 
         self.secroom_txt2_flag = False
 
+
+        self.secroom_book_flag = False
+        self.secroom_plug_flag = False
+        self.secroom_plug_text = False
+        self.secroom_book_text = False
+
         # 컴퓨터 폴더 상호작용 글씨 불 변수
         self.secroom_folder_text = False
         # 파워 공급기 on/off 버튼 설정
@@ -244,12 +250,16 @@ class SecurityroomState:
                 # 이건 건드릴 필요 없음
                 pass
             else:
-                if self.secroom_computer_rect.collidepoint(event.pos) and not self.power_flag:
+                if self.secroom_computer_rect.collidepoint(event.pos) and not self.power_flag and not self.secroom_plug_flag:
                     self.secroom_computer_off_text = True
                 elif self.secroom_computer_rect.collidepoint(event.pos) and self.power_flag:
                     self.secroom_computer_on_flag = True
                     self.secroom_computer_on_text = True
                 if self.secroom_power_supply_rect.collidepoint(event.pos):
+                    if self.inventory_equipped_item == "book":
+                        self.secroom_book_flag = True
+                    elif self.inventory_equipped_item == "plug":
+                        self.secroom_plug_flag = True
                     self.secroom_power_supply_flag = True
                     self.secroom_power_supply_text = True
                 if self.secroom_door_rect.collidepoint(event.pos):
@@ -260,7 +270,7 @@ class SecurityroomState:
             # 만약 키보드의 e를 눌렀을 때를 판단
             if event.key == pygame.K_e :
                 # True면 inventory가 "inventory" 가 아니고 텍스트가 출력 중이 아닌지 다시 판단
-                if self.inventory != "inventory" and not self.show_text and not self.secroom_power_supply_flag and not self.delete_txt1_flag:
+                if self.inventory != "inventory" and not self.show_text and not self.secroom_power_supply_flag and not self.delete_txt1_flag and not self.secroom_computer_on_flag:
                     # True면 inventory를 "inventory" 로 바꾸고 main.py에서 값을 받아서 인벤토리를 그려줘.
                     self.inventory = "inventory"
                 else:
@@ -292,6 +302,7 @@ class SecurityroomState:
                     self.text_start_time = None
                     # 출력을 중단하게 False로 바꾸고
                     self.show_text = False
+                    self.noclick = False
                     self.secroom_power_supply_text = False
                 elif self.secroom_computer_on_text:
                     # 텍스트 출력 시간 초기화
@@ -554,49 +565,80 @@ class SecurityroomState:
 
                         
 
-        
-        # 전원 공급기 이미지 상호작용 이벤트
-        elif self.secroom_power_supply_flag:
-            # 전원 공급기 텍스트 이벤트
+        if self.secroom_book_flag and self.secroom_plug_flag:
+            if self.secroom_power_supply_flag:
+                # 전원 공급기 텍스트 이벤트
+                if self.secroom_power_supply_text:
+                    if not self.power_flag:
+                        self.show_text = True
+                        if self.text_start_time is None:
+                            self.text_start_time = pygame.time.get_ticks()
+                        self.elapsed_time = pygame.time.get_ticks() - self.text_start_time
+                        self.show_text_box("비상 전원 공급 장치. 지금은 꺼져 있다.", self.elapsed_time)
+                    else:
+                        self.show_text = True
+                        if self.text_start_time is None:
+                            self.text_start_time = pygame.time.get_ticks()
+                        self.elapsed_time = pygame.time.get_ticks() - self.text_start_time
+                        self.show_text_box("비상 전원 공급 장치. 지금은 작동 중이다.", self.elapsed_time)
+                else:
+                    pygame.draw.rect(self.screen, (255, 255, 255), (483, 189, 300, 350), 5)
+                    pygame.draw.rect(self.screen, (0, 0, 0), (488, 194, 290, 340))
+
+                    # 버튼 표시
+                    if not self.power_flag:
+                        pygame.draw.rect(screen, (200, 200, 200), self.button1_rect)
+                        pygame.draw.rect(screen, (0, 0, 0), self.button1_rect, 2)
+                        pygame.draw.rect(screen, (255, 0, 0), self.button2_rect)
+                        pygame.draw.rect(screen, (0, 0, 0), self.button2_rect, 2)
+                    else:
+                        pygame.draw.rect(screen, (0, 255, 0), self.button1_rect)
+                        pygame.draw.rect(screen, (0, 0, 0), self.button1_rect, 2)
+                        pygame.draw.rect(screen, (200, 200, 200), self.button2_rect)
+                        pygame.draw.rect(screen, (0, 0, 0), self.button2_rect, 2)
+                    # 버튼 텍스트 중앙 정렬
+                    button1_text_rect = self.button1_text.get_rect(center=self.button1_rect.center)
+                    button2_text_rect = self.button2_text.get_rect(center=self.button2_rect.center)
+
+                    # 버튼 텍스트 그리기
+                    screen.blit(self.button1_text, button1_text_rect.topleft)
+                    screen.blit(self.button2_text, button2_text_rect.topleft)
+                    if event.type == pygame.MOUSEBUTTONDOWN:
+                        if self.button1_rect.collidepoint(event.pos):
+                            # 첫 번째 버튼을 클릭했을 때 수행할 동작 추가
+                            self.power_flag = True
+                        elif self.button2_rect.collidepoint(event.pos):
+                            # 두 번째 버튼을 클릭했을 때 수행할 동작 추가
+                            self.power_flag = False
+        elif not self.secroom_book_flag and self.secroom_plug_flag:
             if self.secroom_power_supply_text:
-                if not self.power_flag:
-                    self.show_text = True
-                    if self.text_start_time is None:
-                        self.text_start_time = pygame.time.get_ticks()
-                    self.elapsed_time = pygame.time.get_ticks() - self.text_start_time
-                    self.show_text_box("비상 전원 공급 장치. 지금은 꺼져 있다.", self.elapsed_time)
-                else:
-                    self.show_text = True
-                    if self.text_start_time is None:
-                        self.text_start_time = pygame.time.get_ticks()
-                    self.elapsed_time = pygame.time.get_ticks() - self.text_start_time
-                    self.show_text_box("비상 전원 공급 장치. 지금은 작동 중이다.", self.elapsed_time)
+                self.show_text = True
+                if self.text_start_time is None:
+                    self.text_start_time = pygame.time.get_ticks()
+                self.elapsed_time = pygame.time.get_ticks() - self.text_start_time
+                self.show_text_box("플러그는 꽂았다. 사용 방법이 뭘까?", self.elapsed_time)
             else:
-                pygame.draw.rect(self.screen, (255, 255, 255), (483, 189, 300, 350), 5)
-                pygame.draw.rect(self.screen, (0, 0, 0), (488, 194, 290, 340))
+                self.secroom_power_supply_flag = False
 
-                # 버튼 표시
-                if not self.power_flag:
-                    pygame.draw.rect(screen, (200, 200, 200), self.button1_rect)
-                    pygame.draw.rect(screen, (0, 0, 0), self.button1_rect, 2)
-                    pygame.draw.rect(screen, (255, 0, 0), self.button2_rect)
-                    pygame.draw.rect(screen, (0, 0, 0), self.button2_rect, 2)
-                else:
-                    pygame.draw.rect(screen, (0, 255, 0), self.button1_rect)
-                    pygame.draw.rect(screen, (0, 0, 0), self.button1_rect, 2)
-                    pygame.draw.rect(screen, (200, 200, 200), self.button2_rect)
-                    pygame.draw.rect(screen, (0, 0, 0), self.button2_rect, 2)
-                # 버튼 텍스트 중앙 정렬
-                button1_text_rect = self.button1_text.get_rect(center=self.button1_rect.center)
-                button2_text_rect = self.button2_text.get_rect(center=self.button2_rect.center)
+        elif self.secroom_book_flag and not self.secroom_plug_flag:
+            if self.secroom_power_supply_text:
+                self.show_text = True
+                if self.text_start_time is None:
+                    self.text_start_time = pygame.time.get_ticks()
+                self.elapsed_time = pygame.time.get_ticks() - self.text_start_time
+                self.show_text_box("전력 공급 장치로 플러그가 필요하다.", self.elapsed_time)
+            else:
+                self.secroom_power_supply_flag = False
 
-                # 버튼 텍스트 그리기
-                screen.blit(self.button1_text, button1_text_rect.topleft)
-                screen.blit(self.button2_text, button2_text_rect.topleft)
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    if self.button1_rect.collidepoint(event.pos):
-                        # 첫 번째 버튼을 클릭했을 때 수행할 동작 추가
-                        self.power_flag = True
-                    elif self.button2_rect.collidepoint(event.pos):
-                        # 두 번째 버튼을 클릭했을 때 수행할 동작 추가
-                        self.power_flag = False
+        else:
+            if self.secroom_power_supply_text:
+                self.show_text = True
+                if self.text_start_time is None:
+                    self.text_start_time = pygame.time.get_ticks()
+                self.elapsed_time = pygame.time.get_ticks() - self.text_start_time
+                self.show_text_box("작동하지 않는다. 어떻게 사용하는 걸까?", self.elapsed_time)
+            else:
+                self.secroom_power_supply_flag = False
+
+
+
