@@ -52,7 +52,7 @@ game_state = "hollway"
 start_state = start_state.StartState(screen_width, screen_height)
 lab_state = lab_state.LabState(screen_width, screen_height, screen, inventory_equipped_item)
 restingroom_state = restingroom_state.RestingroomState(screen_width, screen_height, screen, inventory_equipped_item)
-hollway_state = hollway_state.HollwayState(screen_width, screen_height, screen)
+hollway_state = hollway_state.HollwayState(screen_width, screen_height, screen, inventory_equipped_item)
 securityroom_state = securityroom_state.SecurityroomState(screen_width, screen_height, screen, inventory_equipped_item)
 storage_state = storage_state.StorageState(screen_width, screen_height, screen, inventory_equipped_item)
 
@@ -117,6 +117,7 @@ while running:
                     inventory_items.append(item)
             lab_state.handle_event(event)
             game_state = lab_state.game_state
+            lab_state.inventory_equipped_item = inventory_equipped_item
         elif game_state == "hollway":
             lab_state.game_state = "lab"
             storage_state.game_state = "storage"
@@ -126,6 +127,7 @@ while running:
             new_items = hollway_state.inventory_items
             hollway_state.handle_event(event)
             game_state = hollway_state.game_state
+            hollway_state.inventory_equipped_item = inventory_equipped_item
         elif game_state == "storage":
             hollway_state.game_state = "hollway"
             game_state = storage_state.game_state   
@@ -135,6 +137,8 @@ while running:
                 if item not in inventory_items:
                     inventory_items.append(item)
             storage_state.handle_event(event)
+            storage_state.inventory_equipped_item = inventory_equipped_item
+            print(inventory_equipped_item)
         elif game_state == "restingroom":
             hollway_state.game_state = "hollway"
             inventory = restingroom_state.inventory
@@ -144,6 +148,7 @@ while running:
                     inventory_items.append(item)
             restingroom_state.handle_event(event)
             game_state = restingroom_state.game_state
+            restingroom_state.inventory_equipped_item = inventory_equipped_item
         elif game_state == "securityroom":
             hollway_state.game_state = "hollway"
             inventory = securityroom_state.inventory
@@ -153,6 +158,7 @@ while running:
                     inventory_items.append(item)
             securityroom_state.handle_event(event)
             game_state = securityroom_state.game_state
+            securityroom_state.inventory_equipped_item = inventory_equipped_item
 
     screen.fill(white)
 
@@ -212,29 +218,17 @@ while running:
 
         # 아이템 종류에 따라 inventory_equipped_item 설정
         if equipped_item == lab_state.lab_wire:
-            lab_state.inventory_equipped_item = "lab_wire"
-            storage_state.inventory_equipped_item = "lab_wire"
-            restingroom_state.inventory_equipped_item = "lab_wire"
+            inventory_equipped_item = "lab_wire"
         elif equipped_item == lab_state.lab_switch:
-            lab_state.inventory_equipped_item = "lab_switch"
-            storage_state.inventory_equipped_item = "lab_switch"
-            restingroom_state.inventory_equipped_item = "lab_switch"
+            inventory_equipped_item = "lab_switch"
         elif equipped_item == lab_state.keyCard:
-            lab_state.inventory_equipped_item = "keykard"
-            storage_state.inventory_equipped_item = "keykard"
-            restingroom_state.inventory_equipped_item = "keykard"
+            inventory_equipped_item = "keykard"
         elif equipped_item == storage_state.storage_toolbox_screwdriver:
-            lab_state.inventory_equipped_item = "storage_toolbox_screwdriver"
-            storage_state.inventory_equipped_item = "storage_toolbox_screwdriver"
-            restingroom_state.inventory_equipped_item = "storage_toolbox_screwdriver"
+            inventory_equipped_item = "storage_toolbox_screwdriver"
         elif equipped_item == storage_state.safekey:
-            lab_state.inventory_equipped_item = "safekey"
-            storage_state.inventory_equipped_item = "safekey"
-            restingroom_state.inventory_equipped_item = "safekey"
+            inventory_equipped_item = "safekey"
         elif equipped_item == restingroom_state.Inventory_Key:
-            lab_state.inventory_equipped_item = "key"
-            storage_state.inventory_equipped_item = "key"
-            restingroom_state.inventory_equipped_item = "key"
+            inventory_equipped_item = "key"
 
         
 
