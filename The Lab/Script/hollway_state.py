@@ -15,6 +15,8 @@ class HollwayState:
         # 게임 사운드 불러오기
         self.Door_audio_path = os.path.join(self.script_directory, '../audio/Door.mp3')
         self.Door_audio = pygame.mixer.Sound(self.Door_audio_path)
+        self.BrokenDoor_path = os.path.join(self.script_directory, '../audio/BrokenDoor.mp3')
+        self.BrokenDoor_audio = pygame.mixer.Sound(self.BrokenDoor_path)
 
         self.Hollway_background_path = os.path.join(self.script_directory, "../image/Hollway/Hollway_background.png")
         self.exitdoor_path = os.path.join(self.script_directory, "../image/Hollway/Hollway_Exit.png")
@@ -106,7 +108,7 @@ class HollwayState:
                 elif self.retiringdoor_rect.collidepoint(event.pos):  # 이미지 위에서 클릭되었는지 확인
                     
                     if self.restingdoor_flag:
-                        self.Door_audio.play()
+                        self.BrokenDoor_audio.play()
                         self.game_state = "restingroom"
                     else:
                         if self.inventory_equipped_item == "lab_wire":

@@ -66,7 +66,7 @@ class RestingroomState:
         self.rest_tablit_screen = False
 
         # 게임 사운드 경로 설정
-        self.Door_audio_path = os.path.join(self.script_directory, '../audio/Door.mp3')
+        self.BrokenDoor_path = os.path.join(self.script_directory, '../audio/BrokenDoor.mp3')
 
         # 게임 이미지 경로 설정
         self.RestingRoom_background_path = os.path.join(self.script_directory,
@@ -95,7 +95,7 @@ class RestingroomState:
             "../image/InventoryItems/Inventory_Key.png")
         
         # 사운드 불러오기
-        self.Door_audio = pygame.mixer.Sound(self.Door_audio_path)
+        self.BrokenDoor = pygame.mixer.Sound(self.BrokenDoor_path)
 
         # 게임 이미지 불러오기
         self.RestingRoom_background = pygame.image.load(self.RestingRoom_background_path)
@@ -180,7 +180,7 @@ class RestingroomState:
                     self.inventory_items.append(self.Inventory_Key)
 
                 if self.RestingRoom_door_rect.collidepoint(event.pos):
-                            self.Door_audio.play()
+                            self.BrokenDoor.play()
                             self.game_state = "hollway"
 
                 if self.RestingRoom_tabliton_rect.collidepoint(event.pos):
