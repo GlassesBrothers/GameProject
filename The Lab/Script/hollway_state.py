@@ -17,6 +17,8 @@ class HollwayState:
         self.Door_audio = pygame.mixer.Sound(self.Door_audio_path)
         self.BrokenDoor_path = os.path.join(self.script_directory, '../audio/BrokenDoor.mp3')
         self.BrokenDoor_audio = pygame.mixer.Sound(self.BrokenDoor_path)
+        self.Bomb_path = os.path.join(self.script_directory, '../audio/Bomb.wav')
+        self.Bomb_audio = pygame.mixer.Sound(self.Bomb_path)
 
         self.Hollway_background_path = os.path.join(self.script_directory, "../image/Hollway/Hollway_background.png")
         self.exitdoor_path = os.path.join(self.script_directory, "../image/Hollway/Hollway_Exit.png")
@@ -271,6 +273,7 @@ class HollwayState:
                 if self.text_start_time is None:
                     self.text_start_time = pygame.time.get_ticks()
                 self.elapsed_time = pygame.time.get_ticks() - self.text_start_time
+                self.Bomb_audio.play()
                 self.show_text_box("폭탄이 설치됨과 동시에 터지며 열렸다.", self.elapsed_time)
             else:
                 self.restingdoor_flag = True
