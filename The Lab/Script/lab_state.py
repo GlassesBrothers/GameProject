@@ -72,6 +72,9 @@ class LabState:
         # 게임 사운드 불러오기
         self.Door_audio_path = os.path.join(self.script_directory, '../audio/Door.mp3')
         self.Door_audio = pygame.mixer.Sound(self.Door_audio_path)
+        self.Button_audio_path = os.path.join(self.script_directory, '../audio/Button.mp3')
+        self.Button_audio = pygame.mixer.Sound(self.Button_audio_path)
+        self.Button_audio_flag = False
 
 
         # 다른 상호작용 요소에 대한 초기화 코드 작성
@@ -493,9 +496,20 @@ class LabState:
                             if self.button1_rect.collidepoint(event.pos):
                                 # 첫 번째 버튼을 클릭했을 때 수행할 동작 추가
                                 self.lab_door_flag = True
+                                if self.Button_audio_flag == False:
+                                    self.Button_audio.play()
+                                    self.Button_audio_flag = True
                             elif self.button2_rect.collidepoint(event.pos):
                                 # 두 번째 버튼을 클릭했을 때 수행할 동작 추가
                                 self.lab_door_flag = False
+                                if self.Button_audio_flag == False:
+                                    self.Button_audio.play()
+                                    self.Button_audio_flag = True
+                        
+                        if event.type == pygame.MOUSEBUTTONUP:
+                            if self.button1_rect.collidepoint(event.pos) or self.button2_rect.collidepoint(event.pos):
+                                self.Button_audio_flag = False
+
                 if self.folder_flag:
                     pygame.draw.rect(self.screen, (0, 0, 0), (235, 160, 210, 110), 5)
                     pygame.draw.rect(screen, (255, 255, 255), (240, 165, 200, 100))

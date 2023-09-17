@@ -85,6 +85,9 @@ class SecurityroomState:
         # 게임 사운드 불러오기
         self.Door_audio_path = os.path.join(self.script_directory, '../audio/Door.mp3')
         self.Door_audio = pygame.mixer.Sound(self.Door_audio_path)
+        self.Button_audio_path = os.path.join(self.script_directory, '../audio/Button.mp3')
+        self.Button_audio = pygame.mixer.Sound(self.Button_audio_path)
+        self.Button_audio_flag = False
 
         # 게임 이미지 경로 설정
         if not self.power_flag:
